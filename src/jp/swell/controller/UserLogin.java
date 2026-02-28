@@ -23,9 +23,9 @@ public class UserLogin extends ControllerBase {
      * この処理はクライアントのキャッシュを認めるか デフォルト false. 等を設定する。
      * doActionの前に呼ばれる。
      */
-	@Override
-	public void doInit() {
-	    setLoginNeeds(true);      // ログインが必要
+    @Override
+    public void doInit() {
+        setLoginNeeds(false); // この処理にはログインが必要かどうか
         setHttpNeeds(false); // この処理はhttpでなければならないか
         setHttpsNeeds(false); // この処理はhttps でなければならないか。公開時にはtrueにする
         setUsecache(false); // この処理はクライアントのキャッシュを認めるか
@@ -36,97 +36,49 @@ public class UserLogin extends ControllerBase {
      *
      * @throws Exception
      */
-//    @Override
-//    public void doActionProcess() throws AtareSysException {
-//        WebBean bean = getWebBean();
-//        bean.trimAllItem();
-//
-//        if ("UserLogin".equals(bean.value("form_name"))) {
-//            // ログインボタンが押されたときの処理
-//            if ("login".equals(bean.value("action_cmd"))) {
-//                this.setLoginInfo(null);
-//                if (!inputCheck()) {
-//                    this.forward("/UserLogin.jsp");
-//                    return; // 入力チェックが失敗した場合は、これ以降の処理を行わない
-//                }
-//
-//                UserLoginInfo userLoginInfo = (UserLoginInfo) getLoginInfo();
-//
-//                // ★ 管理者権限を判定して遷移
-//                if (userLoginInfo.getAdminFlag() == 1) {
-//                    redirect("MenuAdmin.do");
-//                } else {
-//                    redirect("UserMenu.do");
-//                }
-//
-//                return;
-//            } else if ("repassword".equals(bean.value("action_cmd"))) {
-//                redirect("SendPassMail.do");
-//            }
-//        } else if ("UserMenuHome".equals(bean.value("form_name"))) {
-//            // ログインボタンが押されたときの処理
-//            if ("logout".equals(bean.value("action_cmd"))) {
-//                doLogout(); // ログアウト処理
-//                return;
-//            }
-//        } else {
-//            this.forward("/UserLogin.jsp");
-//        }
-//    }
-     /**
-      * jp.it_person.controller.HttpServlet のメソッドをオーバライド
-      */
-     @Override
-     public void doActionProcess() throws AtareSysException {
-         WebBean bean = getWebBean();
+    @Override
+    public void doActionProcess() throws AtareSysException {
+        WebBean bean = getWebBean();
+        bean.trimAllItem();
 
-         // ログインボタンが押された場合
-         if ("login".equals(bean.value("action_cmd"))) {
+        if ("UserLogin".equals(bean.value("form_name"))) {
+            // ログインボタンが押されたときの処理
+            if ("login".equals(bean.value("action_cmd"))) {
+                this.setLoginInfo(null);
+                UserLoginInfo userLoginInfo = (UserLoginInfo) getLoginInfo();
+                if (userLoginInfo == null) {
+                    userLoginInfo = new UserLoginInfo();
+                }
+                if (!userLoginInfo.login(bean.value("ac"), bean.value("ko"))) {
+                    bean.setError("ac", "usernameかpasswordが違います");
+                    this.forward("/UserLogin.jsp");
+                    return; // 入力チェックが失敗した場合は、これ以降の処理を行わない
+                }
 
-             // 1, 2, 3の処理: 画面入力値チェックとDB照合
-             if (inputCheck()) { // 認証成功
-                 
-                 // 4. 管理者/一般ユーザーの区別と 5. 遷移の振り分け
-                 UserLoginInfo userLoginInfo = (UserLoginInfo) getLoginInfo();
-                 
-                 if (userLoginInfo != null && userLoginInfo.isSystemManager()) {
-                     // 管理者の場合: 管理メニューへ遷移
-                     this.redirect("MenuAdmin.do");
-                 } else {
-                     // 一般ユーザーの場合: 一般メニューへ遷移
-                     this.redirect("UserMenu.jsp");
-                 }
-                 return; // 成功したらここで処理を終了
+                userLoginInfo.setUserInfo(userLoginInfo.getUserInfoDao());
+                setLoginInfo(userLoginInfo);
+                bean.setValue("user_info_id", userLoginInfo.getUserInfoId());
 
-             } else {
-                 // ログイン失敗時（inputCheck内でエラーメッセージ設定済み）
-                 this.forward("UserLogin.jsp");
-                 return;
-             }
-         }
+                if (userLoginInfo.isSystemManager()) {
+                    redirect("MenuAdmin.do");
+                } else {
+                    redirect("UserMenu.do");
+                }
+                return;
+            } else if ("repassword".equals(bean.value("action_cmd"))) {
+                redirect("SendPassMail.do");
+            }
+        } else if ("UserMenuHome".equals(bean.value("form_name"))) {
+            // ログインボタンが押されたときの処理
+            if ("logout".equals(bean.value("action_cmd"))) {
+                doLogout(); // ログアウト処理
+                return;
+            }
+        } else {
+            this.forward("/UserLogin.jsp");
+        }
+    }
 
-         // 既にログイン済みの場合の処理（リフレッシュなど）
-         if (isLogin()) {
-             if ("logout".equals(bean.value("action_cmd"))) {
-                 doLogout();
-                 return;
-             }
-             
-          // ログイン済みの場合も権限に応じてページを振り分け
-             UserLoginInfo userLoginInfo = (UserLoginInfo) getLoginInfo();
-             if (userLoginInfo != null && userLoginInfo.isSystemManager()) {
-                  this.redirect("MenuAdmin.do");
-             } else {
-                  this.redirect("UserMenu.jsp");
-             }
-             return;
-         }
-
-         // それ以外（未ログイン状態）はログイン画面へ
-         this.forward("/TopPage.do");
-     }
-
- // ... (省略) ...
     /**
      * 入力チェック
      *
@@ -136,11 +88,11 @@ public class UserLogin extends ControllerBase {
     private boolean inputCheck() throws AtareSysException {
 
         WebBean bean = getWebBean();
-        if (bean.value("ac").length() == 0) {	// ユーザー名が未入力
+        if (bean.value("ac").length() == 0) {
             bean.setError("ac", "未入力");
             return false;
         }
-        if (bean.value("ko").length() == 0) {	// パスワードが未入力
+        if (bean.value("ko").length() == 0) {
             bean.setError("ko", "未入力");
             return false;
         }
@@ -149,8 +101,8 @@ public class UserLogin extends ControllerBase {
         if (userLoginInfo == null) {
             userLoginInfo = new UserLoginInfo();
         }
-        if (!userLoginInfo.login(bean.value("ac"), bean.value("ko"))) {	// ログイン失敗
-            bean.setError("ac", "usernameかpasswordが違います");		// エラーメッセージ表示
+        if (!userLoginInfo.login(bean.value("ac"), bean.value("ko"))) {
+            bean.setError("ac", "usernameかpasswordが違います");
             return false;
         }
         userLoginInfo.setUserInfo(userLoginInfo.getUserInfoDao());
@@ -167,7 +119,7 @@ public class UserLogin extends ControllerBase {
     // ログアウト処理を行うメソッド
     private void doLogout() throws AtareSysException {
         clearLoginInfo(); // ログイン情報をクリア
-        redirect("/TopPage.do"); // ログインページにリダイレクト
+        redirect("UserLogin.do"); // ログインページにリダイレクト
     }
 
 }

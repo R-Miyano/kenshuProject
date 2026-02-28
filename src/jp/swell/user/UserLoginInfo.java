@@ -194,7 +194,7 @@ public class UserLoginInfo extends LoginInfo implements java.io.Serializable {
     /**
      * ログイン処理を行う.
      *
-     * @param pAccount アカウントまたはメールアドレス
+     * @param pAccount  アカウントまたはメールアドレス
      * @param pPassword パスワード
      * @return ログインに成功：true、失敗：false
      */
@@ -218,32 +218,33 @@ public class UserLoginInfo extends LoginInfo implements java.io.Serializable {
         return this.userInfoDao;
     }
 
-    @Override
     public boolean isNoticeArrive() {
         return true;
     }
 
-    @Override
     public boolean limitation(String loginId) {
         return false;
     }
 
-    @Override
-    public boolean isSystemManager() {
-    	// 【修正前】
-        // return true;
-
-        // 【修正後】
-        // userInfoDaoがnullでなく、かつDAOのisAdmin()メソッド（管理者フラグ=1）がtrueを返すかチェックする
-    	return userInfoDao != null && userInfoDao.isAdmin();
+    public String getAdmin() {
+        if (userInfoDao == null) {
+            return "0";
+        }
+        return String.valueOf(userInfoDao.getAdmin());
     }
 
-    @Override
+    public boolean isSystemManager() {
+
+        if (userInfoDao == null) {
+            return false;
+        }
+        return userInfoDao.getAdmin() == 1;
+    }
+
     public String getLoginId() {
         return userInfoDao.getUserInfoId();
     }
 
-    @Override
     public boolean login(String pAccount, String pPassword) {
         try {
             userInfoDao = new UserInfoDao();
@@ -251,28 +252,11 @@ public class UserLoginInfo extends LoginInfo implements java.io.Serializable {
             if (!flg) {
                 return false;
             }
-            
-            // ★ 管理者権限を取得
-            String sql = "SELECT admin FROM user_info WHERE user_info_id = " + 
-                         jp.patasys.common.db.DbS.chara(pAccount);
-            java.util.List<java.util.HashMap<String, String>> rs = jp.patasys.common.db.DbBase.dbSelect(sql);
-            if (!rs.isEmpty()) {
-                userInfoDao.setAdmin(Integer.parseInt(rs.get(0).getOrDefault("admin", "0")));
-            }
-
             return true;
         } catch (AtareSysException e) {
             userInfoDao = null;
             e.printStackTrace();
             return false;
         }
-    }
-
-    /**
-     * 管理者フラグ取得
-     * @return 1: 管理者 / 0: 一般
-     */
-    public int getAdminFlag() {
-        return userInfoDao != null ? userInfoDao.getAdmin() : 0;
     }
 }

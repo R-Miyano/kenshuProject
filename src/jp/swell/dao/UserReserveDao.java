@@ -24,12 +24,11 @@ import java.util.Set;
 import jp.patasys.common.AtareSysException;
 import jp.patasys.common.db.DaoPageInfo;
 import jp.patasys.common.db.DbBase;
-import jp.patasys.common.db.DbI;
 import jp.patasys.common.db.DbO;
 import jp.patasys.common.db.DbS;
 
 /**
- * UserReserveDao  UserReserveDao 情報テーブルのDAOを提供する。
+ * UserReserveDao UserReserveDao 情報テーブルのDAOを提供する。
  *
  * @author 2023 PATAPATA Corp. Corp.
  * @version 1.0
@@ -53,56 +52,63 @@ public class UserReserveDao implements Serializable {
    * userInfoId ユーザー情報ID
    */
   private String userInfoId = "";
+
   /**
    * 予約紐づけIDを取得する。
+   * 
    * @return userReserveId 予約紐づけID
    */
-  public String getUserReserveId()
-  {
+  public String getUserReserveId() {
     return userReserveId;
   }
+
   /**
    * 予約紐づけIDをセットする。.
+   * 
    * @param userReserveId 予約紐づけID
    */
-  public void setUserReserveId(String userReserveId)
-  {
+  public void setUserReserveId(String userReserveId) {
     this.userReserveId = userReserveId;
   }
+
   /**
    * 予約情報IDを取得する。
+   * 
    * @return reserveId ユーザ情報ID
    */
-  public String getReserveId()
-  {
+  public String getReserveId() {
     return reserveId;
   }
+
   /**
    * 予約情報IDをセットする
+   * 
    * @param reserveId ユーザ情報ID
    */
-  public void setReserveId(String reserveId)
-  {
+  public void setReserveId(String reserveId) {
     this.reserveId = reserveId;
   }
+
   /**
    * ユーザ情報IDを取得する。
+   * 
    * @return userInfoId ユーザ情報ID
    */
-  public String getUserInfoId()
-  {
+  public String getUserInfoId() {
     return userInfoId;
   }
+
   /**
    * ユーザ情報IDをセットする。
+   * 
    * @param userInfoId ユーザ情報ID
    */
-  public void setUserInfoId(String userInfoId)
-  {
+  public void setUserInfoId(String userInfoId) {
     this.userInfoId = userInfoId;
   }
-  
+
   private ReserveFileDao reserveFileDaos = new ReserveFileDao();
+
   /**
    * reserve_filesテーブルのfile_idをセット・取得
    * 
@@ -111,11 +117,13 @@ public class UserReserveDao implements Serializable {
   public ReserveFileDao getReserveFileDaos() {
     return reserveFileDaos;
   }
+
   public void setReserveFileDaos(ReserveFileDao reserveFileDaos) {
     this.reserveFileDaos = reserveFileDaos;
   }
-  
+
   private FileDao fileDaos = new FileDao();
+
   /**
    * reserve_filesテーブルのfile_idをセット・取得
    * 
@@ -124,11 +132,13 @@ public class UserReserveDao implements Serializable {
   public FileDao getFileDaos() {
     return fileDaos;
   }
+
   public void setFileDaos(FileDao fileDaos) {
     this.fileDaos = fileDaos;
   }
-  
+
   private ReserveDao reserveDaos = new ReserveDao();
+
   /**
    * reserve_filesテーブルのfile_idをセット・取得
    * 
@@ -137,22 +147,23 @@ public class UserReserveDao implements Serializable {
   public ReserveDao getReserveDaos() {
     return reserveDaos;
   }
+
   public void setReserveDaos(ReserveDao reserveDaos) {
     this.reserveDaos = reserveDaos;
   }
-  
+
   private String[] userIds;
 
   // userIdsをセットするメソッド
   public void setUserIds(String[] userIds) {
-      this.userIds = userIds;
+    this.userIds = userIds;
   }
 
   // userIdsを取得するメソッド
   public String[] getUserIds() {
-      return this.userIds;
+    return this.userIds;
   }
-  
+
   /**
    * データアクセス権限のあるユーザリストを取得する。.
    */
@@ -174,50 +185,52 @@ public class UserReserveDao implements Serializable {
     fieldsArray.put("reserve_id", "user_reserve.reserve_id");
 
   }
+
   /**
    * user_reserve ユーザ情報テーブルを検索しuser_reserve ユーザ情報テーブルの１行を取得します。.
    *
-   * @param pUserReserveId   ユーザ予約ID
+   * @param pUserReserveId ユーザ予約ID
    * @return true:読み込み成功 false:存在しない
    * @throws AtareSysException フレームワーク共通例外
    */
-  public boolean dbSelect(String pUserReserveId) throws AtareSysException
-  {
-      String sql =  "select "
-              + " user_reserve.user_reserve_id as user_reserve___user_reserve_id"
-              + ",user_reserve.user_info_id as user_reserve___user_info_id"
-              + ",user_reserve.reserve_id as user_reserve___reserve_id"
-      + " from user_reserve ";
-      sql += ""
-      + " where user_reserve_id = " + DbS.chara(pUserReserveId);
-      List<HashMap<String, String>> rs = DbBase.dbSelect(sql);
-      if(0==rs.size())   return false;
-      HashMap<String, String> map = rs.get(0);
-      setUserReserveDaoForJoin(map,this);
-      return true;
+  public boolean dbSelect(String pUserReserveId) throws AtareSysException {
+    String sql = "select "
+        + " user_reserve.user_reserve_id as user_reserve___user_reserve_id"
+        + ",user_reserve.user_info_id as user_reserve___user_info_id"
+        + ",user_reserve.reserve_id as user_reserve___reserve_id"
+        + " from user_reserve ";
+    sql += ""
+        + " where user_reserve_id = " + DbS.chara(pUserReserveId);
+    List<HashMap<String, String>> rs = DbBase.dbSelect(sql);
+    if (0 == rs.size())
+      return false;
+    HashMap<String, String> map = rs.get(0);
+    setUserReserveDaoForJoin(map, this);
+    return true;
   }
+
   /**
    * user_reserve ユーザ情報テーブルを検索しuser_reserve ユーザ情報テーブルの１行を取得します。.
    *
-   * @param pUserReserveId   ユーザ予約ID
+   * @param pUserReserveId ユーザ予約ID
    * @return true:読み込み成功 false:存在しない
    * @throws AtareSysException フレームワーク共通例外
    */
-  public boolean dbSelect(String pUserReserveId,String pas) throws AtareSysException
-  {
-      String sql =  "select "
-              + " user_reserve.user_reserve_id as user_reserve___user_reserve_id"
-              + ",user_reserve.user_info_id as user_reserve___user_info_id"
-              + ",user_reserve.reserve_id as user_reserve___reserve_id"
-      + " from user_reserve ";
-      sql += ""
-      + " where user_reserve_id = " + DbS.chara(pUserReserveId)
-      + " and password = " + DbS.chara(pas);
-      List<HashMap<String, String>> rs = DbBase.dbSelect(sql);
-      if(0==rs.size())   return false;
-      HashMap<String, String> map = rs.get(0);
-      setUserReserveDaoForJoin(map,this);
-      return true;
+  public boolean dbSelect(String pUserReserveId, String pas) throws AtareSysException {
+    String sql = "select "
+        + " user_reserve.user_reserve_id as user_reserve___user_reserve_id"
+        + ",user_reserve.user_info_id as user_reserve___user_info_id"
+        + ",user_reserve.reserve_id as user_reserve___reserve_id"
+        + " from user_reserve ";
+    sql += ""
+        + " where user_reserve_id = " + DbS.chara(pUserReserveId)
+        + " and password = " + DbS.chara(pas);
+    List<HashMap<String, String>> rs = DbBase.dbSelect(sql);
+    if (0 == rs.size())
+      return false;
+    HashMap<String, String> map = rs.get(0);
+    setUserReserveDaoForJoin(map, this);
+    return true;
   }
 
   /**
@@ -227,10 +240,9 @@ public class UserReserveDao implements Serializable {
    * @param dao UserReserveDaoこのテーブルのインスタンス
    */
   public void setUserReserveDao(HashMap<String, String> map, UserReserveDao dao) throws AtareSysException {
-    dao.setUserReserveId(DbI.chara(map.get("user_reserve_id")));
-    dao.setUserInfoId(DbI.chara(map.get("user_info_id")));
-    dao.setReserveId(DbI.chara(map.get("reserve_id")));
-    
+    dao.setUserReserveId(map.getOrDefault("user_reserve_id", ""));
+    dao.setUserInfoId(map.getOrDefault("user_info_id", ""));
+    dao.setReserveId(map.getOrDefault("reserve_id", ""));
 
   }
 
@@ -241,18 +253,19 @@ public class UserReserveDao implements Serializable {
    * @param dao UserReserveDaoこのテーブルのインスタンス
    */
   public void setUserReserveDaoForJoin(HashMap<String, String> map, UserReserveDao dao) throws AtareSysException {
-    dao.setUserReserveId(DbI.chara(map.get("user_reserve___user_reserve_id")));
-    dao.setUserInfoId(DbI.chara(map.get("user_reserve___user_info_id")));
-    dao.setReserveId(DbI.chara(map.get("user_reserve___reserve_id")));
+    dao.setUserReserveId(map.getOrDefault("user_reserve___user_reserve_id", ""));
+    dao.setUserInfoId(map.getOrDefault("user_reserve___user_info_id", ""));
+    dao.setReserveId(map.getOrDefault("user_reserve___reserve_id", ""));
     // link_user_idに対応するreserve_idを取得し、セット
     ReserveDao reserve = new ReserveDao();
-    reserve.dbSelect(DbI.chara(map.getOrDefault("user_reserve___reserve_id", "")));
+    reserve.dbSelect(map.getOrDefault("user_reserve___reserve_id", ""));
     dao.setReserveDaos(reserve);
     // link_user_idに対応するreserve_idを取得し、セット
     ReserveFileDao reserveFile = new ReserveFileDao();
-    reserveFile.dbSelect(DbI.chara(map.getOrDefault("user_reserve___reserve_id", "")));
+    reserveFile.dbSelect(map.getOrDefault("user_reserve___reserve_id", ""));
     dao.setReserveFileDaos(reserveFile);
   }
+
   /**
    * user_reserve 予約情報テーブルにデータを挿入する
    *
@@ -260,18 +273,19 @@ public class UserReserveDao implements Serializable {
    * @throws AtareSysException エラー
    */
   public boolean dbInsertUserReserve() throws AtareSysException {
-      String sql = "insert into user_reserve ("
-              + " user_reserve_id"
-              + ", user_info_id"
-              + ", reserve_id"
-              + ") values ("
-              +  DbO.chara(getUserReserveId())
-              + "," + DbO.chara(getUserInfoId())
-              + "," + DbO.chara(getReserveId())
-              + ")";
-      int ret = DbBase.dbExec(sql);
-      if (ret != 1) throw new AtareSysException("dbInsertReserve number or record exception.");
-      return true;
+    String sql = "insert into user_reserve ("
+        + " user_reserve_id"
+        + ", user_info_id"
+        + ", reserve_id"
+        + ") values ("
+        + DbO.chara(getUserReserveId())
+        + "," + DbO.chara(getUserInfoId())
+        + "," + DbO.chara(getReserveId())
+        + ")";
+    int ret = DbBase.dbExec(sql);
+    if (ret != 1)
+      throw new AtareSysException("dbInsertReserve number or record exception.");
+    return true;
   }
 
   /**
@@ -280,38 +294,38 @@ public class UserReserveDao implements Serializable {
    * @return true:成功 false:失敗
    * @throws AtareSysException フレームワーク共通例外
    */
-  public boolean dbUpdateUserReserve() throws AtareSysException
-  {
-      String sql="update user_reserve set "
-      + " user_reserve_id = " +    DbO.chara(getUserReserveId())
-      + "," +" user_info_id = " +  DbO.chara(getUserInfoId())
-      + "," + " reserve_id = " +    DbO.chara(getReserveId())
-      + " where user_reserve = " + DbS.chara(userReserveId)
-      + "";
-      int ret = DbBase.dbExec(sql);
-      if(ret!=1) throw new AtareSysException("dbUpdate number or record exception.") ;
-      return true;
+  public boolean dbUpdateUserReserve() throws AtareSysException {
+    String sql = "update user_reserve set "
+        + " user_reserve_id = " + DbO.chara(getUserReserveId())
+        + "," + " user_info_id = " + DbO.chara(getUserInfoId())
+        + "," + " reserve_id = " + DbO.chara(getReserveId())
+        + " where user_reserve = " + DbS.chara(userReserveId)
+        + "";
+    int ret = DbBase.dbExec(sql);
+    if (ret != 1)
+      throw new AtareSysException("dbUpdate number or record exception.");
+    return true;
   }
 
   /**
    * user_reserve 予約情報テーブルからデータを削除する
    *
-   * @param pUserReserveId   予約情報ID
+   * @param pUserReserveId 予約情報ID
    * @return true:成功 false:失敗
    * @throws AtareSysException エラー
    */
-  public boolean dbDeleteUserReserve(String pReserveId) throws AtareSysException
-  {
-      String sql="delete from user_reserve "
-      + " where reserve_id = " + DbS.chara(pReserveId);
-      int ret = DbBase.dbExec(sql);
-      if(ret<1) throw new AtareSysException("dbDelete number or record exception.") ;
-      return true;
+  public boolean dbDeleteUserReserve(String pReserveId) throws AtareSysException {
+    String sql = "delete from user_reserve "
+        + " where reserve_id = " + DbS.chara(pReserveId);
+    int ret = DbBase.dbExec(sql);
+    if (ret < 1)
+      throw new AtareSysException("dbDelete number or record exception.");
+    return true;
   }
-
 
   /**
    * データベースからルーム名を取得するメソッド
+   * 
    * @return UserYoyakuDetailに返す
    * @throws AtareSysException
    */
@@ -323,20 +337,19 @@ public class UserReserveDao implements Serializable {
     ArrayList<UserReserveDao> userReserves = new ArrayList<>();
     for (HashMap<String, String> map : rs) {
       UserReserveDao userReserve = new UserReserveDao();
-        // ReserveDAOのインスタンスにデータを設定
-        userReserve.setUserReserveId(map.get("user_reserve_id"));
-        userReserve.setUserInfoId(map.get("user_info_id"));
-        userReserve.setReserveId(map.get("reserve_id"));
-        userReserves.add(userReserve);
+      // ReserveDAOのインスタンスにデータを設定
+      userReserve.setUserReserveId(map.get("user_reserve_id"));
+      userReserve.setUserInfoId(map.get("user_info_id"));
+      userReserve.setReserveId(map.get("reserve_id"));
+      userReserves.add(userReserve);
     }
 
     return userReserves; // 取得したルームリストを返す
-}
-  
-  
-  
+  }
+
   /**
    * 予約情報を表示
+   * 
    * @return UserYoyakuDetailに返す
    * @throws AtareSysException
    */
@@ -347,7 +360,7 @@ public class UserReserveDao implements Serializable {
     List<HashMap<String, String>> rs = DbBase.dbSelect(sql);
     // 結果が空でないかをチェック
     if (rs.isEmpty()) {
-        return null; // 予約が見つからなかった場合はnullを返す
+      return null; // 予約が見つからなかった場合はnullを返す
     }
     // 最初の結果を取り出す
     HashMap<String, String> map = rs.get(0);
@@ -360,63 +373,70 @@ public class UserReserveDao implements Serializable {
 
     // 最新の予約を返す
     return userReserve;
-}
+  }
 
   /**
    * user_reserve ユーザ情報テーブルを検索し指定されたレコードのリストを返す
-   * @param myclass        検索条件をUserReserveDaoのインスタンスに入れて渡す
-   * @param sortKey     ソート順を配列で渡す　キー値は項目名　値はソート順 "ASC" "DESC"
-   * @param daoPageInfo   取得したいページの番やライン数を入れる。結果がここに帰ってくる
-   *                       ライン数に-1を入れると全件取得になる
+   * 
+   * @param myclass     検索条件をUserReserveDaoのインスタンスに入れて渡す
+   * @param sortKey     ソート順を配列で渡す キー値は項目名 値はソート順 "ASC" "DESC"
+   * @param daoPageInfo 取得したいページの番やライン数を入れる。結果がここに帰ってくる
+   *                    ライン数に-1を入れると全件取得になる
    * @return 取得したUserReserveDaoの配列
    * @throws AtareSysException エラー
    */
-  static public ArrayList<UserReserveDao> dbSelectList(UserReserveDao myclass, LinkedHashMap<String,String> sortKey,DaoPageInfo daoPageInfo) throws AtareSysException
-  {
-      ArrayList<UserReserveDao> array = new ArrayList<UserReserveDao>();
+  static public ArrayList<UserReserveDao> dbSelectList(UserReserveDao myclass, LinkedHashMap<String, String> sortKey,
+      DaoPageInfo daoPageInfo) throws AtareSysException {
+    ArrayList<UserReserveDao> array = new ArrayList<UserReserveDao>();
 
-      /* レコードの総件数を求める */
-      String sql =  "select count(*) as count"
-      + " from user_reserve "
-      + " left join user_info on user_reserve.user_info_id = user_info.user_info_id "
-      + " left join reserve on user_reserve.reserve_id = reserve.reserve_id "
-      + " left join room on reserve.room_id = room.room_id "
-      + myclass.dbWhere();
-      List<HashMap<String, String>> rs = DbBase.dbSelect(sql);
-      if(0==rs.size())   return array;
-      HashMap<String, String> map = rs.get(0);
-      int len = Integer.parseInt(map.get("count"));
-      daoPageInfo.setRecordCount(len);
-      if(len == 0)   return array;
-      if(-1==daoPageInfo.getLineCount()) daoPageInfo.setLineCount(len);
-      daoPageInfo.setMaxPageNo((int) Math.ceil((double)len/(double)(daoPageInfo.getLineCount())));
-      if(daoPageInfo.getPageNo() < 1) daoPageInfo.setPageNo(1);
-      if(daoPageInfo.getPageNo() > daoPageInfo.getMaxPageNo()) daoPageInfo.setPageNo(daoPageInfo.getMaxPageNo());
-      int start  =   (daoPageInfo.getPageNo() - 1) * daoPageInfo.getLineCount();
-      sql =  "select "
-          + " user_reserve.user_reserve_id as user_reserve___user_reserve_id"
-          + ",user_reserve.user_info_id as user_reserve___user_info_id"
-          + ",user_reserve.reserve_id as user_reserve___reserve_id"
-          + " from user_reserve "
-          + " left join user_info on user_reserve.user_info_id = user_info.user_info_id "
-          + " left join reserve on user_reserve.reserve_id = reserve.reserve_id "
-          + " left join room on reserve.room_id = room.room_id ";
-      String where = myclass.dbWhere();
-      String order = myclass.dbOrder(sortKey);
-      sql += where;
-      sql += order;
-      sql += " limit " + daoPageInfo.getLineCount() + " offset " + start + ";";
-      rs  =  DbBase.dbSelect(sql);
-      int cnt = rs.size();
-      if(cnt < 1)    return array;
-      for(int i=0;i<cnt;i++)
-      {
-          UserReserveDao  dao  = new UserReserveDao();
-          map = rs.get(i);
-          dao.setUserReserveDaoForJoin(map,dao);
-          array.add(dao);
-      }
+    /* レコードの総件数を求める */
+    String sql = "select count(*) as count"
+        + " from user_reserve "
+        + " left join user_info on user_reserve.user_info_id = user_info.user_info_id "
+        + " left join reserve on user_reserve.reserve_id = reserve.reserve_id "
+        + " left join room on reserve.room_id = room.room_id "
+        + myclass.dbWhere();
+    List<HashMap<String, String>> rs = DbBase.dbSelect(sql);
+    if (0 == rs.size())
       return array;
+    HashMap<String, String> map = rs.get(0);
+    String countStr = map.getOrDefault("count", "0");
+    int len = Integer.parseInt(countStr.isEmpty() ? "0" : countStr);
+    daoPageInfo.setRecordCount(len);
+    if (len == 0)
+      return array;
+    if (-1 == daoPageInfo.getLineCount())
+      daoPageInfo.setLineCount(len);
+    daoPageInfo.setMaxPageNo((int) Math.ceil((double) len / (double) (daoPageInfo.getLineCount())));
+    if (daoPageInfo.getPageNo() < 1)
+      daoPageInfo.setPageNo(1);
+    if (daoPageInfo.getPageNo() > daoPageInfo.getMaxPageNo())
+      daoPageInfo.setPageNo(daoPageInfo.getMaxPageNo());
+    int start = (daoPageInfo.getPageNo() - 1) * daoPageInfo.getLineCount();
+    sql = "select "
+        + " user_reserve.user_reserve_id as user_reserve___user_reserve_id"
+        + ",user_reserve.user_info_id as user_reserve___user_info_id"
+        + ",user_reserve.reserve_id as user_reserve___reserve_id"
+        + " from user_reserve "
+        + " left join user_info on user_reserve.user_info_id = user_info.user_info_id "
+        + " left join reserve on user_reserve.reserve_id = reserve.reserve_id "
+        + " left join room on reserve.room_id = room.room_id ";
+    String where = myclass.dbWhere();
+    String order = myclass.dbOrder(sortKey);
+    sql += where;
+    sql += order;
+    sql += " limit " + daoPageInfo.getLineCount() + " offset " + start + ";";
+    rs = DbBase.dbSelect(sql);
+    int cnt = rs.size();
+    if (cnt < 1)
+      return array;
+    for (int i = 0; i < cnt; i++) {
+      UserReserveDao dao = new UserReserveDao();
+      map = rs.get(i);
+      dao.setUserReserveDaoForJoin(map, dao);
+      array.add(dao);
+    }
+    return array;
   }
 
   /**
@@ -425,69 +445,65 @@ public class UserReserveDao implements Serializable {
    * @return String where句の文字列
    * @throws AtareSysException フレームワーク共通例外
    */
-  private String dbWhere() throws AtareSysException
-  {
-      StringBuffer where = new StringBuffer(1024);
-      if (userIds != null && userIds.length > 0) {
-        where.append(where.length() > 0 ? " OR " : "");
-        where.append("user_reserve.user_info_id IN (");
-        
-        for (int i = 0; i < userIds.length; i++) {
-            where.append(DbS.chara(userIds[i]));
-            if (i < userIds.length - 1) {
-                where.append(", ");
-            }
+  private String dbWhere() throws AtareSysException {
+    StringBuffer where = new StringBuffer(1024);
+    if (userIds != null && userIds.length > 0) {
+      where.append(where.length() > 0 ? " OR " : "");
+      where.append("user_reserve.user_info_id IN (");
+
+      for (int i = 0; i < userIds.length; i++) {
+        where.append(DbS.chara(userIds[i]));
+        if (i < userIds.length - 1) {
+          where.append(", ");
         }
-        
-        where.append(") ");
       }
 
-      if(getUserReserveId().length()>0)
-      {
-        where.append(where.length()>0 ? " OR " : "");
-        where.append("user_reserve.user_reserve_id LIKE " + DbS.chara("%" + getUserReserveId() + "%"));
-      }
+      where.append(") ");
+    }
 
-      if(getUserInfoId().length()>0)
-      {
-          where.append(where.length()>0 ? " OR " : "");
-          where.append("user_reserve.user_info_id LIKE " + DbS.chara("%" + getUserInfoId() + "%"));
-      }
-      if(getReserveId().length()>0)
-      {
-          where.append(where.length()>0 ? " OR " : "");
-          where.append("user_reserve.reserve_id LIKE " + DbS.chara("%" + getReserveId() + "%"));
-      }
-      if(where.length()>0)
-      {
-          return "where " + where.toString();
-      }
-      return "";
+    if (getUserReserveId().length() > 0) {
+      where.append(where.length() > 0 ? " OR " : "");
+      where.append("user_reserve.user_reserve_id LIKE " + DbS.chara("%" + getUserReserveId() + "%"));
+    }
+
+    if (getUserInfoId().length() > 0) {
+      where.append(where.length() > 0 ? " OR " : "");
+      where.append("user_reserve.user_info_id LIKE " + DbS.chara("%" + getUserInfoId() + "%"));
+    }
+    if (getReserveId().length() > 0) {
+      where.append(where.length() > 0 ? " OR " : "");
+      where.append("user_reserve.reserve_id LIKE " + DbS.chara("%" + getReserveId() + "%"));
+    }
+    if (where.length() > 0) {
+      return "where " + where.toString();
+    }
+    return "";
   }
+
   /**
    * user_reserve ユーザ情報テーブルの並べ替え順序を設定する。.
    *
    * @param sortKey
    * @return Stringソート句の文字列
    */
-  private String dbOrder(LinkedHashMap<String, String> sortKey)
-  {
-      String str = "";
-      if (sortKey == null) return "";
-      Set<String> keySet = sortKey.keySet();
-      for (Iterator<String> i = keySet.iterator(); i.hasNext();)
-      {
-          String key = i.next();
-          if (null == fieldsArray.get(key)) continue;
-          str += !"".equals(str) ? " , " : "";
-          String ss[] = fieldsArray.get(key).split(",");
-          for (int j = 0; j < ss.length; j++)
-          {
-              if (j != 0) str += ",";
-              str += ss[j] + ' ' + sortKey.get(key);
-          }
+  private String dbOrder(LinkedHashMap<String, String> sortKey) {
+    String str = "";
+    if (sortKey == null)
+      return "";
+    Set<String> keySet = sortKey.keySet();
+    for (Iterator<String> i = keySet.iterator(); i.hasNext();) {
+      String key = i.next();
+      if (null == fieldsArray.get(key))
+        continue;
+      str += !"".equals(str) ? " , " : "";
+      String ss[] = fieldsArray.get(key).split(",");
+      for (int j = 0; j < ss.length; j++) {
+        if (j != 0)
+          str += ",";
+        str += ss[j] + ' ' + sortKey.get(key);
       }
-      str = "".equals(str) ? "" : (" order by " + str);
-      return str;
+    }
+    str = "".equals(str) ? "" : (" order by " + str);
+    return str;
   }
 }

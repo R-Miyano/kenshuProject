@@ -15,7 +15,6 @@ import java.util.UUID;
 import jp.patasys.common.AtareSysException;
 import jp.patasys.common.db.DaoPageInfo;
 import jp.patasys.common.db.DbBase;
-import jp.patasys.common.db.DbI;
 import jp.patasys.common.db.DbO;
 import jp.patasys.common.db.DbS;
 
@@ -30,7 +29,7 @@ public class FileDao implements Serializable {
     private ArrayList<String> authorityUserList = null;
 
     /**
-     *  データアクセス権限のあるユーザリストを取得する。.
+     * データアクセス権限のあるユーザリストを取得する。.
      */
     public ArrayList<String> getAuthorityUserList() {
         return authorityUserList;
@@ -268,7 +267,7 @@ public class FileDao implements Serializable {
     }
 
     /**
-     * user_file_id 
+     * user_file_id
      */
     private String userFileId = "";
 
@@ -421,7 +420,7 @@ public class FileDao implements Serializable {
     /**
      * files ファイルテーブルを検索し fileテーブルの１行を取得します。.
      *
-     * @param pfileId   部屋ID
+     * @param pfileId 部屋ID
      * @return true:読み込み成功 false:存在しない
      * @throws AtareSysException フレームワーク共通例外
      */
@@ -473,7 +472,7 @@ public class FileDao implements Serializable {
     /**
      * files ファイルテーブルを検索し fileテーブルの１行を取得します。.
      *
-     * @param pFileId  部屋ID
+     * @param pFileId 部屋ID
      * @return true:読み込み成功 false:存在しない
      * @throws AtareSysException フレームワーク共通例外
      */
@@ -504,48 +503,46 @@ public class FileDao implements Serializable {
     /**
      * FileDao にfiles ファイルテーブルから読み込んだデータを設定する。.
      *
-     * @param map  読み込んだテーブルの１レコードが入っているHashMap
-     * @param dao  FileDaoこのテーブルのインスタンス
+     * @param map 読み込んだテーブルの１レコードが入っているHashMap
+     * @param dao FileDaoこのテーブルのインスタンス
      */
     public void setFileDao(HashMap<String, String> map, FileDao dao) throws AtareSysException {
-        dao.setFileId(DbI.chara(map.get("file_id")));
-        dao.setUserInfoId(DbI.chara(map.get("user_info_id")));
-        dao.setFileName(DbI.chara(map.get("file_name")));
-        dao.setFilePath(DbI.chara(map.get("file_path")));
-        dao.setUploadDate(DbI.chara(map.get("upload_date")));
-        dao.setFileKey(DbI.chara(map.get("file_key")));
-        dao.setMimeType(DbI.chara(map.get("mime_type")));
-        dao.setSystemFileName(DbI.chara(map.get("system_file_name")));
-        dao.setUploadUserId(DbI.chara(map.get("upload_user_id")));
-        dao.setExpirationDate(DbI.chara(map.get("expiration_date")));
+        dao.setFileId(map.getOrDefault("file_id", ""));
+        dao.setUserInfoId(map.getOrDefault("user_info_id", ""));
+        dao.setFileName(map.getOrDefault("file_name", ""));
+        dao.setFilePath(map.getOrDefault("file_path", ""));
+        dao.setUploadDate(map.getOrDefault("upload_date", ""));
+        dao.setFileKey(map.getOrDefault("file_key", ""));
+        dao.setMimeType(map.getOrDefault("mime_type", ""));
+        dao.setSystemFileName(map.getOrDefault("system_file_name", ""));
+        dao.setUploadUserId(map.getOrDefault("upload_user_id", ""));
+        dao.setExpirationDate(map.getOrDefault("expiration_date", ""));
     }
 
     /**
-     *  FileDao にfiles ファイルテーブルから読み込んだデータを設定する。.
+     * FileDao にfiles ファイルテーブルから読み込んだデータを設定する。.
      *
-     * @param map  読み込んだテーブルの１レコードが入っているHashMap
-     * @param dao  FileDaoこのテーブルのインスタンス
+     * @param map 読み込んだテーブルの１レコードが入っているHashMap
+     * @param dao FileDaoこのテーブルのインスタンス
      */
     public void setFileDaoForJoin(HashMap<String, String> map, FileDao dao) throws AtareSysException {
-        dao.setFileId(DbI.chara(map.get("files___file_id") != null ? map.get("files___file_id") : ""));
-        dao.setUserInfoId(DbI.chara(map.get("files___user_info_id") != null ? map.get("files___user_info_id") : ""));
-        dao.setFileName(DbI.chara(map.get("files___file_name") != null ? map.get("files___file_name") : ""));
-        dao.setFilePath(DbI.chara(map.get("files___file_path") != null ? map.get("files___file_path") : ""));
-        dao.setUploadDate(DbI.chara(map.get("files___upload_date") != null ? map.get("files___upload_date") : ""));
-        dao.setFileKey(DbI.chara(map.get("files___file_key") != null ? map.get("files___file_key") : ""));
-        dao.setMimeType(DbI.chara(map.get("files___mime_type") != null ? map.get("files___mime_type") : ""));
-        dao.setSystemFileName(
-                DbI.chara(map.get("files___system_file_name") != null ? map.get("files___system_file_name") : ""));
-        dao.setUploadUserId(
-                DbI.chara(map.get("files___upload_user_id") != null ? map.get("files___upload_user_id") : ""));
-        dao.setExpirationDate(
-                DbI.chara(map.get("files___expiration_date") != null ? map.get("files___expiration_date") : ""));
+        dao.setFileId(map.getOrDefault("files___file_id", ""));
+        dao.setUserInfoId(map.getOrDefault("files___user_info_id", ""));
+        dao.setFileName(map.getOrDefault("files___file_name", ""));
+        dao.setFilePath(map.getOrDefault("files___file_path", ""));
+        dao.setUploadDate(map.getOrDefault("files___upload_date", ""));
+        dao.setFileKey(map.getOrDefault("files___file_key", ""));
+        dao.setMimeType(map.getOrDefault("files___mime_type", ""));
+        dao.setSystemFileName(map.getOrDefault("files___system_file_name", ""));
+        dao.setUploadUserId(map.getOrDefault("files___upload_user_id", ""));
+        dao.setExpirationDate(map.getOrDefault("files___expiration_date", ""));
         dao.setUploaderFirstName(map.get("uploader_first_name"));
         dao.setUploaderLastName(map.get("uploader_last_name"));
     }
 
     /**
      * 新しいトークンを生成するメソッド。
+     * 
      * @return 生成したトークン
      */
     public static String FileKey() {
@@ -554,7 +551,8 @@ public class FileDao implements Serializable {
 
     /**
      * files ファイルテーブルにデータを挿入する
-     * @param puserInfoId 
+     * 
+     * @param puserInfoId
      *
      * @return true:成功 false:失敗
      * @throws AtareSysException エラー
@@ -602,6 +600,7 @@ public class FileDao implements Serializable {
 
     /**
      * DB登録直後に登録したfileIdを返す
+     * 
      * @return fileId
      * @throws AtareSysException
      */
@@ -631,7 +630,7 @@ public class FileDao implements Serializable {
     /**
      * room ルームテーブルからデータを削除する
      *
-     * @param pRoomId   ユーザ情報ID
+     * @param pRoomId ユーザ情報ID
      * @return true:成功 false:失敗
      * @throws AtareSysException エラーs
      */
@@ -651,6 +650,7 @@ public class FileDao implements Serializable {
 
     /**
      * データベースからルーム名を取得するメソッド
+     * 
      * @return UserMenuに返す
      * @throws AtareSysException
      */
@@ -721,8 +721,6 @@ public class FileDao implements Serializable {
 
         return resultList;
     }
-
-    
 
     /**
      * files ファイル情報テーブルの検索条件を設定する。.

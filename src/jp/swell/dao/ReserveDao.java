@@ -24,7 +24,6 @@ import java.util.Set;
 import jp.patasys.common.AtareSysException;
 import jp.patasys.common.db.DaoPageInfo;
 import jp.patasys.common.db.DbBase;
-import jp.patasys.common.db.DbI;
 import jp.patasys.common.db.DbO;
 import jp.patasys.common.db.DbS;
 import jp.patasys.common.db.GetNumber;
@@ -129,6 +128,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 予約情報IDを取得する。
+     * 
      * @return reserveId ユーザ情報ID
      */
     public String getReserveId() {
@@ -137,6 +137,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 予約情報IDをセットする
+     * 
      * @param reserveId ユーザ情報ID
      */
     public void setReserveId(String reserveId) {
@@ -145,6 +146,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * ユーザ情報IDを取得する。
+     * 
      * @return userInfoId ユーザ情報ID
      */
     public String getUserInfoId() {
@@ -153,6 +155,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * ユーザ情報IDをセットする。
+     * 
      * @param userInfoId ユーザ情報ID
      */
     public void setUserInfoId(String userInfoId) {
@@ -161,6 +164,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * ルーム情報IDを取得する。
+     * 
      * @return roomId ユーザ情報ID
      */
     public String getRoomId() {
@@ -169,6 +173,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * ルーム情報IDをセットする。
+     * 
      * @return roomId ユーザ情報ID
      */
     public void setRoomId(String roomId) {
@@ -177,6 +182,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 予約日情報を取得する。
+     * 
      * @return reservationDate 予約日情報
      */
     public String getReservationDate() {
@@ -185,6 +191,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 予約日情報をセットする。
+     * 
      * @return reservationDate 予約日情報
      */
     public void setReservationDate(String reservationDate) {
@@ -193,6 +200,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 開始時間を取得する。
+     * 
      * @return checkinTime 開始時間
      */
     public String getCheckinTime() {
@@ -201,6 +209,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 開始時間をセットする。
+     * 
      * @return checkinTime 開始時間
      */
     public void setCheckinTime(String checkinTime) {
@@ -209,6 +218,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 終了時間を取得する。
+     * 
      * @return checkOutTime 終了時間
      */
     public String getCheckoutTime() {
@@ -217,6 +227,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 終了時間をセットする。
+     * 
      * @return checkOutTime 終了時間
      */
     public void setCheckoutTime(String checkoutTime) {
@@ -225,6 +236,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * テキスト情報を取得する。
+     * 
      * @return inputText テキスト情報
      */
     public String getInputText() {
@@ -233,6 +245,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * テキスト情報をセットする。
+     * 
      * @return inputText テキスト情報
      */
     public void setInputText(String inputText) {
@@ -241,6 +254,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 色情報を取得する。
+     * 
      * @return color 色
      */
     public String getColor() {
@@ -249,6 +263,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 色情報をセットする。
+     * 
      * @return color 色
      */
     public void setColor(String color) {
@@ -257,6 +272,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 備考情報を取得する。
+     * 
      * @return inputRemark 備考情報
      */
     public String getInputRemark() {
@@ -265,6 +281,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 備考情報をセットする。
+     * 
      * @return inputRemark 備考情報
      */
     public void setInputRemark(String inputRemark) {
@@ -273,6 +290,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 入力日時情報を取得する。
+     * 
      * @return insertDate 入力日時
      */
     public String getInsertDate() {
@@ -281,6 +299,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 入力日時情報をセットする。
+     * 
      * @return insertDate 入力日時
      */
     public void setInsertDate(String insertDate) {
@@ -289,6 +308,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 入力ユーザーIDを取得する。
+     * 
      * @return insertUserId 入力ユーザーID
      */
     public String getInsertUserId() {
@@ -297,6 +317,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 入力ユーザーIDをセットする。
+     * 
      * @return insertUserId 入力ユーザーID
      */
     public void setInsertUserId(String insertUserId) {
@@ -305,6 +326,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * アップデート日時を取得する。
+     * 
      * @return updateDate アップデート日時
      */
     public String getUpdateDate() {
@@ -313,6 +335,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * アップデート日時をセットする。
+     * 
      * @return updateDate アップデート日時
      */
     public void setUpdateDate(String updateDate) {
@@ -321,6 +344,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * アップデートユーザーID情報を取得する。
+     * 
      * @return updateUserId アップデートユーザーID
      */
     public String getUpdateUserId() {
@@ -329,6 +353,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * アップデートユーザーID情報をセットする。
+     * 
      * @return updateUserId アップデートユーザーID
      */
     public void setUpdateUserId(String updateUserId) {
@@ -337,6 +362,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * アップデートユーザー名の情報を取得する。
+     * 
      * @return updateUserName アップデートユーザー名
      */
     public String getUpdateUserName() {
@@ -345,6 +371,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * アップデートユーザー名の情報をセットする。
+     * 
      * @return updateUserName アップデートユーザー名
      */
     public void setUpdateUserName(String updateUserName) {
@@ -353,6 +380,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 部屋名情報を取得する。
+     * 
      * @return roomName 部屋名
      */
     public String getRoomName() {
@@ -361,6 +389,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 部屋名情報をセットする。
+     * 
      * @param roomName 部屋名
      */
     public void setRoomName(String roomName) {
@@ -369,6 +398,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * ユーザー名情報を取得する。
+     * 
      * @return userName ユーザー名
      */
     public String getUserName() {
@@ -377,6 +407,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * ユーザー名情報をセットする。
+     * 
      * @param userName ユーザー名
      */
     public void setUserName(String userName) {
@@ -385,6 +416,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 管理者権限を取得する。
+     * 
      * @return adminFlag 管理者権限
      */
     public String getAdmin() {
@@ -393,6 +425,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 管理者権限をセットする。.
+     * 
      * @param adminFlag 管理者権限
      */
     public void setAdmin(String admin) {
@@ -401,6 +434,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 予約紐づけIDを取得する。
+     * 
      * @return userReserveId 予約紐づけID
      */
     public String getUserReserveId() {
@@ -409,6 +443,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 予約紐づけIDをセットする。.
+     * 
      * @param userReserveId 予約紐づけID
      */
     public void setUserReserveId(String userReserveId) {
@@ -417,6 +452,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 複数ユーザーIDを取得する。
+     * 
      * @return getUserInfoIds 複数ユーザーID
      */
     public String[] getUserInfoIds() {
@@ -425,6 +461,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 複数ユーザーIDをセットする。.
+     * 
      * @param setUserInfoIds 複数ユーザーID
      */
     public void setUserInfoIds(String[] userInfoId) {
@@ -433,6 +470,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 複数ユーザー名を取得する。
+     * 
      * @return getUserNames 複数ユーザー名
      */
     public String[] getUserNames() {
@@ -441,6 +479,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 複数ユーザー名をセットする。.
+     * 
      * @param setUserNames 複数ユーザー名
      */
     public void setUserNames(String[] userNames) {
@@ -449,6 +488,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * ファイルIDを取得する。
+     * 
      * @return getFileId ファイルID
      */
     public String getFileId() {
@@ -457,6 +497,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * ファイルIDをセットする。.
+     * 
      * @param setFileId ファイルID
      */
     public void setFileId(String fileId) {
@@ -486,6 +527,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * テキスト情報を取得する。
+     * 
      * @return inputText テキスト情報
      */
     public String getSelectMonth() {
@@ -494,6 +536,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * テキスト情報をセットする。
+     * 
      * @return inputText テキスト情報
      */
     public void setSelectMonth(String selectMonth) {
@@ -536,7 +579,7 @@ public class ReserveDao implements Serializable {
     /**
      * user_info ユーザ情報テーブルを検索しuser_info ユーザ情報テーブルの１行を取得します。.
      *
-     * @param pUserInfoId   ユーザ情報ID
+     * @param pUserInfoId ユーザ情報ID
      * @return true:読み込み成功 false:存在しない
      * @throws AtareSysException フレームワーク共通例外
      */
@@ -570,7 +613,7 @@ public class ReserveDao implements Serializable {
     /**
      * user_info ユーザ情報テーブルを検索しuser_info ユーザ情報テーブルの１行を取得します。.
      *
-     * @param pUserInfoId   ユーザ情報ID
+     * @param pUserInfoId ユーザ情報ID
      * @return true:読み込み成功 false:存在しない
      * @throws AtareSysException フレームワーク共通例外
      */
@@ -609,20 +652,20 @@ public class ReserveDao implements Serializable {
      * @param dao ReserveDaoこのテーブルのインスタンス
      */
     public void setReserveDao(HashMap<String, String> map, ReserveDao dao) throws AtareSysException {
-        dao.setReserveId(DbI.chara(map.get("reserve_id")));
-        dao.setUserInfoId(DbI.chara(map.get("user_info_id")));
-        dao.setRoomId(DbI.chara(map.get("room_id")));
-        dao.setReservationDate(DbI.chara(map.get("reservation_date")));
-        dao.setCheckinTime(DbI.chara(map.get("checkin_time")));
-        dao.setCheckoutTime(DbI.chara(map.get("checkout_time")));
-        dao.setInputText(DbI.chara(map.get("input_text")));
-        dao.setColor(DbI.chara(map.get("rgb_color")));
-        dao.setInputRemark(DbI.chara(map.get("input_remark")));
-        dao.setInsertDate(DbI.chara(map.get("insert_date")));
-        dao.setInsertUserId(DbI.chara(map.get("insert_user_id")));
-        dao.setUpdateDate(DbI.chara(map.get("update_date")));
-        dao.setUpdateUserId(DbI.chara(map.get("update_user_id")));
-        dao.setUserReserveId(DbI.chara(map.get("user_reserve_id")));
+        dao.setReserveId(map.getOrDefault("reserve_id", ""));
+        dao.setUserInfoId(map.getOrDefault("user_info_id", ""));
+        dao.setRoomId(map.getOrDefault("room_id", ""));
+        dao.setReservationDate(map.getOrDefault("reservation_date", ""));
+        dao.setCheckinTime(map.getOrDefault("checkin_time", ""));
+        dao.setCheckoutTime(map.getOrDefault("checkout_time", ""));
+        dao.setInputText(map.getOrDefault("input_text", ""));
+        dao.setColor(map.getOrDefault("rgb_color", ""));
+        dao.setInputRemark(map.getOrDefault("input_remark", ""));
+        dao.setInsertDate(map.getOrDefault("insert_date", ""));
+        dao.setInsertUserId(map.getOrDefault("insert_user_id", ""));
+        dao.setUpdateDate(map.getOrDefault("update_date", ""));
+        dao.setUpdateUserId(map.getOrDefault("update_user_id", ""));
+        dao.setUserReserveId(map.getOrDefault("user_reserve_id", ""));
     }
 
     /**
@@ -632,20 +675,20 @@ public class ReserveDao implements Serializable {
      * @param dao ReserveDaoこのテーブルのインスタンス
      */
     public void setReserveDaoForJoin(HashMap<String, String> map, ReserveDao dao) throws AtareSysException {
-        dao.setReserveId(DbI.chara(map.get("reserve___reserve_id")));
-        dao.setUserInfoId(DbI.chara(map.get("reserve___user_info_id")));
-        dao.setRoomId(DbI.chara(map.get("reserve___room_id")));
-        dao.setReservationDate(DbI.chara(map.get("reserve___reservation_date")));
-        dao.setCheckinTime(DbI.chara(map.get("reserve___checkin_time")));
-        dao.setCheckoutTime(DbI.chara(map.get("reserve___checkout_time")));
-        dao.setInputText(DbI.chara(map.get("reserve___input_text")));
-        dao.setColor(DbI.chara(map.get("reserve___rgb_color")));
-        dao.setInputRemark(DbI.chara(map.get("reserve___input_remark")));
-        dao.setInsertDate(DbI.chara(map.get("reserve___insert_date")));
-        dao.setInsertUserId(DbI.chara(map.get("reserve___insert_user_id")));
-        dao.setUpdateDate(DbI.chara(map.get("reserve___update_date")));
-        dao.setUpdateUserId(DbI.chara(map.get("reserve___update_user_id")));
-        dao.setUserReserveId(DbI.chara(map.get("reserve___user_reserve_id")));
+        dao.setReserveId(map.getOrDefault("reserve___reserve_id", ""));
+        dao.setUserInfoId(map.getOrDefault("reserve___user_info_id", ""));
+        dao.setRoomId(map.getOrDefault("reserve___room_id", ""));
+        dao.setReservationDate(map.getOrDefault("reserve___reservation_date", ""));
+        dao.setCheckinTime(map.getOrDefault("reserve___checkin_time", ""));
+        dao.setCheckoutTime(map.getOrDefault("reserve___checkout_time", ""));
+        dao.setInputText(map.getOrDefault("reserve___input_text", ""));
+        dao.setColor(map.getOrDefault("reserve___rgb_color", ""));
+        dao.setInputRemark(map.getOrDefault("reserve___input_remark", ""));
+        dao.setInsertDate(map.getOrDefault("reserve___insert_date", ""));
+        dao.setInsertUserId(map.getOrDefault("reserve___insert_user_id", ""));
+        dao.setUpdateDate(map.getOrDefault("reserve___update_date", ""));
+        dao.setUpdateUserId(map.getOrDefault("reserve___update_user_id", ""));
+        dao.setUserReserveId(map.getOrDefault("reserve___user_reserve_id", ""));
     }
 
     /**
@@ -722,7 +765,7 @@ public class ReserveDao implements Serializable {
     /**
      * reserve 予約情報テーブルからデータを削除する
      *
-     * @param pReserveId   予約情報ID
+     * @param pReserveId 予約情報ID
      * @return true:成功 false:失敗
      * @throws AtareSysException エラー
      */
@@ -737,10 +780,11 @@ public class ReserveDao implements Serializable {
 
     /**
      * 予約日時の重複していないかの確認するメソッド
-     * @param roomId 部屋のID
+     * 
+     * @param roomId          部屋のID
      * @param reservationDate 予約の日付
-     * @param checkinTime 予約の開始時間
-     * @param checkoutTime 予約に終了時間
+     * @param checkinTime     予約の開始時間
+     * @param checkoutTime    予約に終了時間
      * @return UserYoyakuDetailに返す
      * @throws AtareSysException
      */
@@ -757,11 +801,13 @@ public class ReserveDao implements Serializable {
         if (rs.isEmpty()) {
             return false;
         }
-        return Integer.parseInt(rs.get(0).get("COUNT(*)")) == 0;
+        String countStr = rs.get(0).getOrDefault("COUNT(*)", "0");
+        return Integer.parseInt(countStr.isEmpty() ? "0" : countStr) == 0;
     }
 
     /**
      * データベースからルーム名を取得するメソッド
+     * 
      * @return UserYoyakuDetailに返す
      * @throws AtareSysException
      */
@@ -804,6 +850,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * データベースからカレンダー用に全ての予約を取得するメソッド
+     * 
      * @return UserYoyakuDetailに返す
      * @throws AtareSysException
      */
@@ -843,6 +890,7 @@ public class ReserveDao implements Serializable {
 
     /**
      * 予約情報を表示
+     * 
      * @return UserYoyakuDetailに返す
      * @throws AtareSysException
      */
@@ -874,10 +922,11 @@ public class ReserveDao implements Serializable {
 
     /**
      * user_info ユーザ情報テーブルを検索し指定されたレコードのリストを返す
-     * @param myclass        検索条件をUserInfoDaoのインスタンスに入れて渡す
-     * @param sortKey     ソート順を配列で渡す　キー値は項目名　値はソート順 "ASC" "DESC"
-     * @param daoPageInfo   取得したいページの番やライン数を入れる。結果がここに帰ってくる
-     *                       ライン数に-1を入れると全件取得になる
+     * 
+     * @param myclass     検索条件をUserInfoDaoのインスタンスに入れて渡す
+     * @param sortKey     ソート順を配列で渡す キー値は項目名 値はソート順 "ASC" "DESC"
+     * @param daoPageInfo 取得したいページの番やライン数を入れる。結果がここに帰ってくる
+     *                    ライン数に-1を入れると全件取得になる
      * @return 取得したUserInfoDaoの配列
      * @throws AtareSysException エラー
      */
@@ -895,7 +944,8 @@ public class ReserveDao implements Serializable {
         if (0 == rs.size())
             return array;
         HashMap<String, String> map = rs.get(0);
-        int len = Integer.parseInt(map.get("count"));
+        String countStr = map.getOrDefault("count", "0");
+        int len = Integer.parseInt(countStr.isEmpty() ? "0" : countStr);
         daoPageInfo.setRecordCount(len);
         if (len == 0)
             return array;

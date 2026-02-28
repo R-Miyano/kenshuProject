@@ -32,7 +32,7 @@ public class MenuAdmin extends ControllerBase {
     public void doActionProcess() throws AtareSysException {
         WebBean bean = getWebBean();
         UserLoginInfo loginInfo = (UserLoginInfo) getLoginInfo();
-            redirect("UserMenuHome.do");
-            return;
+        redirect("UserMenu.do");
+        return;
     }
 }

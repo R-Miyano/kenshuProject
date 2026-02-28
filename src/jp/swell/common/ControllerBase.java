@@ -2,6 +2,7 @@ package jp.swell.common;
 
 import jp.patasys.common.AtareSysException;
 import jp.patasys.common.http.HttpServlet;
+import jp.patasys.common.http.LoginInfo;
 import jp.patasys.common.http.WebBean;
 import jp.swell.user.UserLoginInfo;
 

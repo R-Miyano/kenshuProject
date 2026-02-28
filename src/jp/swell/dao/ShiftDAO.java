@@ -23,7 +23,6 @@ import java.util.UUID;
 import jp.patasys.common.AtareSysException;
 import jp.patasys.common.db.DaoPageInfo;
 import jp.patasys.common.db.DbBase;
-import jp.patasys.common.db.DbI;
 import jp.patasys.common.db.DbO;
 import jp.patasys.common.db.DbS;
 import jp.patasys.common.util.Digest;
@@ -78,13 +77,14 @@ public class ShiftDAO implements Serializable {
      * user_info ユーザ情報テーブルで使用するメンバー変数。
      */
     /**
-     * userInfoId  ユーザ情報ID
+     * userInfoId ユーザ情報ID
      */
     private String userInfoId = "";
 
     /**
      * ユーザ情報IDを取得する。.
-     * @return  userInfoId ユーザ情報ID
+     * 
+     * @return userInfoId ユーザ情報ID
      */
     public String getUserInfoId() {
         return userInfoId;
@@ -92,6 +92,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * ユーザ情報IDをセットする。.
+     * 
      * @param userInfoId ユーザ情報ID
      */
     public void setUserInfoId(String userInfoId) {
@@ -99,13 +100,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * stateFlg  状態フラグ
+     * stateFlg 状態フラグ
      */
     private int stateFlg;
 
     /**
      * フラグを取得する。
-     * @return  stateFlg 状態フラグ
+     * 
+     * @return stateFlg 状態フラグ
      */
     public int getStateFlg() {
         return stateFlg;
@@ -113,6 +115,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * フラグをセットする。.
+     * 
      * @param stateFlg 状態フラグ
      */
     public void setStateFlg(int stateFlg) {
@@ -120,13 +123,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * passwordUser  ユーザーパスワード
+     * passwordUser ユーザーパスワード
      */
     private String passwordUser = "";
 
     /**
      * ユーザーパスワードを取得する。.
-     * @return  passwordUser ユーザーパスワード
+     * 
+     * @return passwordUser ユーザーパスワード
      */
     public String getPasswordUser() {
         return passwordUser;
@@ -134,6 +138,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * ユーザーパスワードをセットする。.
+     * 
      * @param passwordUser ユーザーパスワード
      */
     public void setPasswordUser(String passwordUser) {
@@ -141,13 +146,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * password  パスワード
+     * password パスワード
      */
     private String password = "";
 
     /**
      * パスワードを取得する。.
-     * @return  password パスワード
+     * 
+     * @return password パスワード
      */
     public String getPassword() {
         return password;
@@ -155,6 +161,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * パスワードをセットする。.
+     * 
      * @param password パスワード
      */
     public void setPassword(String password) {
@@ -162,13 +169,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * lastName  姓
+     * lastName 姓
      */
     private String lastName = "";
 
     /**
      * 姓を取得する。.
-     * @return  lastName 姓
+     * 
+     * @return lastName 姓
      */
     public String getLastName() {
         return lastName;
@@ -176,6 +184,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * 姓をセットする。.
+     * 
      * @param lastName 姓
      */
     public void setLastName(String lastName) {
@@ -183,13 +192,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * middleName  ミドルネーム
+     * middleName ミドルネーム
      */
     private String middleName = "";
 
     /**
      * ミドルネームを取得する。.
-     * @return  middleName ミドルネーム
+     * 
+     * @return middleName ミドルネーム
      */
     public String getMiddleName() {
         return middleName;
@@ -197,6 +207,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * ミドルネームをセットする。.
+     * 
      * @param middleName ミドルネーム
      */
     public void setMiddleName(String middleName) {
@@ -204,13 +215,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * firstName  名
+     * firstName 名
      */
     private String firstName = "";
 
     /**
      * 名を取得する。.
-     * @return  firstName 名
+     * 
+     * @return firstName 名
      */
     public String getFirstName() {
         return firstName;
@@ -218,6 +230,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * 名をセットする。.
+     * 
      * @param firstName 名
      */
     public void setFirstName(String firstName) {
@@ -225,13 +238,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * maidenName  旧姓
+     * maidenName 旧姓
      */
     private String maidenName = "";
 
     /**
      * 旧姓を取得する。.
-     * @return  maidenName 旧姓
+     * 
+     * @return maidenName 旧姓
      */
     public String getMaidenName() {
         return maidenName;
@@ -239,6 +253,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * 旧姓をセットする。.
+     * 
      * @param maidenName 旧姓
      */
     public void setMaidenName(String maidenName) {
@@ -246,13 +261,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * lastNameKana  姓よみ
+     * lastNameKana 姓よみ
      */
     private String lastNameKana = "";
 
     /**
      * 姓よみを取得する。.
-     * @return  lastNameKana 姓よみ
+     * 
+     * @return lastNameKana 姓よみ
      */
     public String getLastNameKana() {
         return lastNameKana;
@@ -260,6 +276,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * 姓よみをセットする。.
+     * 
      * @param lastNameKana 姓よみ
      */
     public void setLastNameKana(String lastNameKana) {
@@ -267,13 +284,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * middleNameKana  ミドルネームよみ
+     * middleNameKana ミドルネームよみ
      */
     private String middleNameKana = "";
 
     /**
      * ミドルネームよみを取得する。.
-     * @return  middleNameKana ミドルネームよみ
+     * 
+     * @return middleNameKana ミドルネームよみ
      */
     public String getMiddleNameKana() {
         return middleNameKana;
@@ -281,6 +299,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * ミドルネームよみをセットする。.
+     * 
      * @param middleNameKana ミドルネームよみ
      */
     public void setMiddleNameKana(String middleNameKana) {
@@ -288,13 +307,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * firstNameKana  名よみ
+     * firstNameKana 名よみ
      */
     private String firstNameKana = "";
 
     /**
      * 名よみを取得する。.
-     * @return  firstNameKana 名よみ
+     * 
+     * @return firstNameKana 名よみ
      */
     public String getFirstNameKana() {
         return firstNameKana;
@@ -302,6 +322,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * 名よみをセットする。.
+     * 
      * @param firstNameKana 名よみ
      */
     public void setFirstNameKana(String firstNameKana) {
@@ -309,13 +330,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * maidenNameKana  旧姓よみ
+     * maidenNameKana 旧姓よみ
      */
     private String maidenNameKana = "";
 
     /**
      * 旧姓よみを取得する。.
-     * @return  maidenNameKana 旧姓よみ
+     * 
+     * @return maidenNameKana 旧姓よみ
      */
     public String getMaidenNameKana() {
         return maidenNameKana;
@@ -323,6 +345,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * 旧姓よみをセットする。.
+     * 
      * @param maidenNameKana 旧姓よみ
      */
     public void setMaidenNameKana(String maidenNameKana) {
@@ -330,13 +353,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * insertDate  入力日時
+     * insertDate 入力日時
      */
     private String insertDate = "";
 
     /**
      * 入力日時を取得する。.
-     * @return  insertDate 入力日時
+     * 
+     * @return insertDate 入力日時
      */
     public String getInsertDate() {
         return insertDate;
@@ -344,6 +368,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * 入力日時をセットする。.
+     * 
      * @param insertDate 入力日時
      */
     public void setInsertDate(String insertDate) {
@@ -351,13 +376,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * insertUserId  入力ユーザーＩＤ
+     * insertUserId 入力ユーザーＩＤ
      */
     private String insertUserId = "";
 
     /**
      * 入力ユーザーＩＤを取得する。.
-     * @return  insertUserId 入力ユーザーＩＤ
+     * 
+     * @return insertUserId 入力ユーザーＩＤ
      */
     public String getInsertUserId() {
         return insertUserId;
@@ -365,6 +391,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * 入力ユーザーＩＤをセットする。
+     * 
      * @param insertUserId 入力ユーザーＩＤ
      */
     public void setInsertUserId(String insertUserId) {
@@ -372,13 +399,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * updateDate  アップデート日時
+     * updateDate アップデート日時
      */
     private String updateDate = "";
 
     /**
      * アップデート日時を取得する。.
-     * @return  updateDate アップデート日時
+     * 
+     * @return updateDate アップデート日時
      */
     public String getUpdateDate() {
         return updateDate;
@@ -386,6 +414,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * アップデート日時をセットする。
+     * 
      * @param updateDate アップデート日時
      */
     public void setUpdateDate(String updateDate) {
@@ -393,13 +422,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * updateUserId  アップデートユーザーＩＤ
+     * updateUserId アップデートユーザーＩＤ
      */
     private String updateUserId = "";
 
     /**
      * アップデートユーザーＩＤを取得する。.
-     * @return  updateUserId アップデートユーザーＩＤ
+     * 
+     * @return updateUserId アップデートユーザーＩＤ
      */
     public String getUpdateUserId() {
         return updateUserId;
@@ -407,6 +437,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * アップデートユーザーＩＤをセットする。
+     * 
      * @param updateUserId アップデートユーザーＩＤ
      */
     public void setUpdateUserId(String updateUserId) {
@@ -414,13 +445,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * leaveDate  退職予定日
+     * leaveDate 退職予定日
      */
     private String leaveDate = "";
 
     /**
      * 退職予定日を取得する。.
-     * @return  leaveDate 退職予定日
+     * 
+     * @return leaveDate 退職予定日
      */
     public String getLeaveDate() {
         return leaveDate;
@@ -428,6 +460,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * 退職予定日をセットする。
+     * 
      * @param leaveDate 退職予定日
      */
     public void setLeaveDate(String leaveDate) {
@@ -435,13 +468,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * zipcode  郵便番号
+     * zipcode 郵便番号
      */
     private String zipcode = "";
 
     /**
      * 郵便番号を取得する。.
-     * @return  zipcode 郵便番号
+     * 
+     * @return zipcode 郵便番号
      */
     public String getZipcode() {
         return zipcode;
@@ -449,6 +483,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * 郵便番号をセットする。.
+     * 
      * @param zipcode 郵便番号
      */
     public void setZipcode(String zipcode) {
@@ -456,13 +491,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * address  住所
+     * address 住所
      */
     private String address = "";
 
     /**
      * 住所を取得する。.
-     * @return  address 住所
+     * 
+     * @return address 住所
      */
     public String getAddress() {
         return address;
@@ -470,6 +506,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * 住所をセットする。.
+     * 
      * @param address 住所
      */
     public void setAddress(String address) {
@@ -477,13 +514,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * station  最寄りの駅
+     * station 最寄りの駅
      */
     private String station = "";
 
     /**
      * 最寄りの駅を取得する。.
-     * @return  station 最寄りの駅
+     * 
+     * @return station 最寄りの駅
      */
     public String getStation() {
         return station;
@@ -491,6 +529,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * 最寄りの駅をセットする。.
+     * 
      * @param station 最寄りの駅
      */
     public void setStation(String station) {
@@ -498,13 +537,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * tel  電話番号
+     * tel 電話番号
      */
     private String tel = "";
 
     /**
      * 電話番号を取得する。.
-     * @return  tel 電話番号
+     * 
+     * @return tel 電話番号
      */
     public String getTel() {
         return tel;
@@ -512,6 +552,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * 電話番号をセットする。.
+     * 
      * @param tel 電話番号
      */
     public void setTel(String tel) {
@@ -519,13 +560,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * fax  ＦＡＸ
+     * fax ＦＡＸ
      */
     private String fax = "";
 
     /**
      * ＦＡＸを取得する。.
-     * @return  fax ＦＡＸ
+     * 
+     * @return fax ＦＡＸ
      */
     public String getFax() {
         return fax;
@@ -533,6 +575,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * ＦＡＸをセットする。.
+     * 
      * @param fax ＦＡＸ
      */
     public void setFax(String fax) {
@@ -540,13 +583,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * mtel  携帯電話番号
+     * mtel 携帯電話番号
      */
     private String mtel = "";
 
     /**
      * 携帯電話番号を取得する。.
-     * @return  mtel 携帯電話番号
+     * 
+     * @return mtel 携帯電話番号
      */
     public String getMtel() {
         return mtel;
@@ -554,6 +598,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * 携帯電話番号をセットする。.
+     * 
      * @param mtel 携帯電話番号
      */
     public void setMtel(String mtel) {
@@ -561,13 +606,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * memail  携帯Eメール
+     * memail 携帯Eメール
      */
     private String memail = "";
 
     /**
      * 携帯Eメールを取得する。.
-     * @return  memail 携帯Eメール
+     * 
+     * @return memail 携帯Eメール
      */
     public String getMemail() {
         return memail;
@@ -575,6 +621,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * 携帯Eメールをセットする。.
+     * 
      * @param memail 携帯Eメール
      */
     public void setMemail(String memail) {
@@ -582,13 +629,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * adminFlag　管理者権限
+     * adminFlag 管理者権限
      */
     private String admin = "";
 
     /**
      * 管理者権限を取得する。
-     * @return　adminFlag　管理者権限
+     * 
+     * @return adminFlag 管理者権限
      */
     public String getAdmin() {
         return admin;
@@ -596,20 +644,22 @@ public class ShiftDAO implements Serializable {
 
     /**
      * 管理者権限をセットする。.
-     * @param adminFlag　管理者権限
+     * 
+     * @param adminFlag 管理者権限
      */
     public void setAdmin(String admin) {
         this.admin = admin;
     }
 
     /**
-     * passwordModifyDate  パスワード変更日時
+     * passwordModifyDate パスワード変更日時
      */
     private String passwordModifyDate = "";
 
     /**
      * パスワード変更日時を取得する。.
-     * @return  passwordModifyDate パスワード変更日時
+     * 
+     * @return passwordModifyDate パスワード変更日時
      */
     public String getPasswordModifyDate() {
         return passwordModifyDate;
@@ -617,6 +667,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * パスワード変更日時をセットする。.
+     * 
      * @param passwordModifyDate パスワード変更日時
      */
     public void setPasswordModifyDate(String passwordModifyDate) {
@@ -624,13 +675,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * loginEnableFrom  ログイン可能期間FROM
+     * loginEnableFrom ログイン可能期間FROM
      */
     private String loginEnableFrom = "";
 
     /**
      * ログイン可能期間FROMを取得する。.
-     * @return  loginEnableFrom ログイン可能期間FROM
+     * 
+     * @return loginEnableFrom ログイン可能期間FROM
      */
     public String getLoginEnableFrom() {
         return loginEnableFrom;
@@ -638,6 +690,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * ログイン可能期間FROMをセットする。.
+     * 
      * @param loginEnableFrom ログイン可能期間FROM
      */
     public void setLoginEnableFrom(String loginEnableFrom) {
@@ -645,13 +698,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * loginEnableTo  ログイン可能期間TO
+     * loginEnableTo ログイン可能期間TO
      */
     private String loginEnableTo = "";
 
     /**
      * ログイン可能期間TOを取得する。.
-     * @return  loginEnableTo ログイン可能期間TO
+     * 
+     * @return loginEnableTo ログイン可能期間TO
      */
     public String getLoginEnableTo() {
         return loginEnableTo;
@@ -659,6 +713,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * ログイン可能期間TOをセットする。.
+     * 
      * @param loginEnableTo ログイン可能期間TO
      */
     public void setLoginEnableTo(String loginEnableTo) {
@@ -687,7 +742,7 @@ public class ShiftDAO implements Serializable {
      * searchFullName 検索用氏名を設定します。
      *
      * @param searchFullName
-     *        searchFullName 検索用氏名
+     *                       searchFullName 検索用氏名
      */
     public void setSearchFullName(String searchFullName) {
         this.searchFullName = searchFullName;
@@ -706,7 +761,7 @@ public class ShiftDAO implements Serializable {
      * searchFullName 検索用氏名かなを設定します。
      *
      * @param searchFullNameKana
-     *        searchFullName 検索用氏名かな
+     *                           searchFullName 検索用氏名かな
      */
     public void setSearchFullNameKana(String searchFullNameKana) {
         this.searchFullNameKana = searchFullNameKana;
@@ -725,13 +780,14 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     * searchName  検索名
+     * searchName 検索名
      */
     private String searchName = "";
 
     /**
      * 検索名を取得する。.
-     * @return  searchName　検索名
+     * 
+     * @return searchName 検索名
      */
     public String getSearchName() {
         return searchName;
@@ -739,6 +795,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * 検索名をセットする。.
+     * 
      * @param searchName 検索名
      */
     public void setSearchName(String searchName) {
@@ -746,7 +803,7 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-     *  データアクセス権限のあるユーザリストを取得する。.
+     * データアクセス権限のあるユーザリストを取得する。.
      */
     public ArrayList<String> getAuthorityUserList() {
         return authorityUserList;
@@ -827,7 +884,7 @@ public class ShiftDAO implements Serializable {
     /**
      * employee_shifts ユーザ情報テーブルを検索しemployee_shifts ユーザ情報テーブルの１行を取得します。
      *
-     * @param pId   ユーザ情報ID
+     * @param pId ユーザ情報ID
      * @return true:読み込み成功 false:存在しない
      * @throws AtareSysException フレームワーク共通例外
      */
@@ -852,27 +909,27 @@ public class ShiftDAO implements Serializable {
     }
 
     /**
-    
-    /**
-    * UserInfoDao にuser_info ユーザ情報テーブルから読み込んだデータを設定する。.
-    *
-    * @param map  読み込んだテーブルの１レコードが入っているHashMap
-    * @param dao  UserInfoDaoこのテーブルのインスタンス
-    */
+     * 
+     * /**
+     * UserInfoDao にuser_info ユーザ情報テーブルから読み込んだデータを設定する。.
+     *
+     * @param map 読み込んだテーブルの１レコードが入っているHashMap
+     * @param dao UserInfoDaoこのテーブルのインスタンス
+     */
     public void setEmployeeShift(HashMap<String, String> map, ShiftDAO dao) throws AtareSysException {
-        dao.setId(DbI.chara(map.get("employee_shifts___id")));
-        dao.setName(DbI.chara(map.get("employee_shifts___name")));
-        dao.setEmail(DbI.chara(map.get("employee_shifts___email")));
-        dao.setStartTime(DbI.chara(map.get("employee_shifts___start_time")));
-        dao.setEndTime(DbI.chara(map.get("employee_shifts___end_time")));
-        dao.setWorkPlace(DbI.chara(map.get("employee_shifts___work_place")));
+        dao.setId(map.getOrDefault("employee_shifts___id", ""));
+        dao.setName(map.getOrDefault("employee_shifts___name", ""));
+        dao.setEmail(map.getOrDefault("employee_shifts___email", ""));
+        dao.setStartTime(map.getOrDefault("employee_shifts___start_time", ""));
+        dao.setEndTime(map.getOrDefault("employee_shifts___end_time", ""));
+        dao.setWorkPlace(map.getOrDefault("employee_shifts___work_place", ""));
     }
 
-    /** 
-     * user_info ユーザ情報テーブルにデータを挿入する 
+    /**
+     * user_info ユーザ情報テーブルにデータを挿入する
      * 
-     * @return true:成功 false:失敗 
-     * @throws AtareSysException エラー 
+     * @return true:成功 false:失敗
+     * @throws AtareSysException エラー
      */
     public boolean dbInsert() throws AtareSysException {
 
@@ -924,7 +981,7 @@ public class ShiftDAO implements Serializable {
     /**
      * user_info ユーザ情報テーブルからデータを削除する
      *
-     * @param pUserInfoId   ユーザ情報ID
+     * @param pUserInfoId ユーザ情報ID
      * @return true:成功 false:失敗
      * @throws AtareSysException エラー
      */
@@ -940,7 +997,7 @@ public class ShiftDAO implements Serializable {
     /**
      * user_info ユーザ情報テーブルからデータの削除をキャンセルする
      *
-     * @param pUserInfoId   ユーザ情報ID
+     * @param pUserInfoId ユーザ情報ID
      * @return true:成功 false:失敗
      * @throws AtareSysException エラー
      */
@@ -956,6 +1013,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * メールアドレスの重複確認を行うメソッド(新規登録時)
+     * 
      * @param email 確認するメールアドレス
      * @return メールアドレスが重複していれば true、そうでなければ false
      * @throws AtareSysException
@@ -979,6 +1037,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * メールアドレスの重複確認を行うメソッド(ユーザー情報編集時)
+     * 
      * @param email 確認するメールアドレス
      * @return メールアドレスが重複していれば true、そうでなければ false
      * @throws AtareSysException
@@ -1003,6 +1062,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * ＩＤの重複確認を行うメソッド(新規登録時)
+     * 
      * @param id 確認するＩＤ
      * @return ＩＤが重複していれば true、そうでなければ false
      * @throws AtareSysException
@@ -1026,6 +1086,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * ＩＤの重複確認を行うメソッド(ユーザー情報編集時)
+     * 
      * @param id 確認するＩＤ
      * @return ＩＤが重複していれば true、そうでなければ false
      * @throws AtareSysException
@@ -1050,8 +1111,9 @@ public class ShiftDAO implements Serializable {
 
     /**
      * user_info ユーザ情報テーブルを検索し指定されたレコードのリストを返す
-     * @param myclass        検索条件をUserInfoDaoのインスタンスに入れて渡す
-     * @param sortKey     ソート順を配列で渡す　キー値は項目名　値はソート順 "ASC" "DESC"
+     * 
+     * @param myclass 検索条件をUserInfoDaoのインスタンスに入れて渡す
+     * @param sortKey ソート順を配列で渡す キー値は項目名 値はソート順 "ASC" "DESC"
      * @return 取得したUserInfoDaoの配列
      * @throws AtareSysException エラー
      */
@@ -1077,10 +1139,11 @@ public class ShiftDAO implements Serializable {
 
     /**
      * user_info ユーザ情報テーブルを検索し指定されたレコードのリストを返す
-     * @param myclass        検索条件をUserInfoDaoのインスタンスに入れて渡す
-     * @param sortKey     ソート順を配列で渡す　キー値は項目名　値はソート順 "ASC" "DESC"
-     * @param daoPageInfo   取得したいページの番やライン数を入れる。結果がここに帰ってくる
-     *                       ライン数に-1を入れると全件取得になる
+     * 
+     * @param myclass     検索条件をUserInfoDaoのインスタンスに入れて渡す
+     * @param sortKey     ソート順を配列で渡す キー値は項目名 値はソート順 "ASC" "DESC"
+     * @param daoPageInfo 取得したいページの番やライン数を入れる。結果がここに帰ってくる
+     *                    ライン数に-1を入れると全件取得になる
      * @return 取得したUserInfoDaoの配列
      * @throws AtareSysException エラー
      */
@@ -1154,7 +1217,8 @@ public class ShiftDAO implements Serializable {
         }
 
         if (getWorkPlace() != null && !getWorkPlace().isEmpty()) {
-            if (where.length() > 0) where.append(" AND ");
+            if (where.length() > 0)
+                where.append(" AND ");
             where.append("work_place LIKE " + DbS.chara("%" + getWorkPlace() + "%"));
         }
 
@@ -1195,11 +1259,11 @@ public class ShiftDAO implements Serializable {
     /**
      * ログイン処理のチェックを行う。
      *
-     * @param pAccount アカウントまたはメールアドレス
+     * @param pAccount  アカウントまたはメールアドレス
      * @param pPassword パスワード
      * @return 0::失敗 1:成功 2:管理者ログイン
      * @throws AtareSysException
-     *         エラー
+     *                           エラー
      */
     public boolean login(String pAccount, String pPassword) throws AtareSysException {
         String sql = "";
@@ -1214,7 +1278,8 @@ public class ShiftDAO implements Serializable {
         HashMap<String, String> map = rs.get(0);
         setEmployeeShift(map, this);
         String password = Digest.hex(Digest.SHA512, pPassword);
-        if (!password.equals(DbI.chara(map.get("password")))) {
+        String dbPassword = map.getOrDefault("password", "");
+        if (!password.equals(dbPassword)) {
             return false;
         }
         return true;
@@ -1222,6 +1287,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * データベースからユーザー名を取得するメソッド
+     * 
      * @return UserMenuに返す
      * @throws AtareSysException
      */
@@ -1303,6 +1369,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * トークンをDBへ保存するメソッド
+     * 
      * @param email
      * @param token
      * @param expirationTime
@@ -1343,12 +1410,13 @@ public class ShiftDAO implements Serializable {
 
     /**
      * トークンが有効化検証する
+     * 
      * @param token
      * @return トークンが有効であれば true、無効であれば false
      * @throws AtareSysException
      */
     public boolean isValidToken(String token) throws AtareSysException {
-        //トークンと対応する有効期限を取得するクエリ
+        // トークンと対応する有効期限を取得するクエリ
         String sql = "SELECT expires_at FROM repassword WHERE token = ?";
 
         try (PreparedStatement pstmt = (PreparedStatement) DbBase.getDbConnection().prepareStatement(sql)) {
@@ -1357,7 +1425,7 @@ public class ShiftDAO implements Serializable {
 
             try (ResultSet rs = (ResultSet) pstmt.executeQuery()) {
                 if (rs.next()) {
-                    //有効期限が現在時刻を超えていないか確認
+                    // 有効期限が現在時刻を超えていないか確認
                     Timestamp expiresAt = rs.getTimestamp("expires_at");
                     return expiresAt != null && System.currentTimeMillis() <= expiresAt.getTime();
                 }
@@ -1391,6 +1459,7 @@ public class ShiftDAO implements Serializable {
     /**
      * トークンを使用してユーザーのパスワードを更新するメソッド。
      * 更新後にトークンを無効にする。
+     * 
      * @param token
      * @param newPassword
      * @return パスワードの更新に成功した場合は true、失敗した場合は false
@@ -1447,6 +1516,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * 新しいトークンを生成するメソッド。
+     * 
      * @return 生成したトークン
      */
     public static String generateToken() {
@@ -1455,6 +1525,7 @@ public class ShiftDAO implements Serializable {
 
     /**
      * トークンの有効期限をチェックするメソッド。
+     * 
      * @param tokenGenerationTime トークンが生成された時刻
      * @return トークンが期限切れであれば true、そうでなければ false
      */
