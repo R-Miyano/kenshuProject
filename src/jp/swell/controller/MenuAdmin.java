@@ -1,7 +1,6 @@
 package jp.swell.controller;
 
 import jp.patasys.common.AtareSysException;
-import jp.patasys.common.http.WebBean;
 import jp.swell.common.ControllerBase;
 import jp.swell.user.UserLoginInfo;
 
@@ -30,9 +29,21 @@ public class MenuAdmin extends ControllerBase {
 
     @Override
     public void doActionProcess() throws AtareSysException {
-        WebBean bean = getWebBean();
         UserLoginInfo loginInfo = (UserLoginInfo) getLoginInfo();
-        redirect("UserMenu.do");
-        return;
+
+        // ログイン情報が取得できない場合はログインページへ
+        if (loginInfo == null) {
+            redirect("UserLogin.do");
+            return;
+        }
+
+        // 管理者権限を確認してから遷移する
+        if (loginInfo.isSystemManager()) {
+            // 管理者であれば管理者メニューページを表示
+            forward("/MenuAdmin.jsp");
+        } else {
+            // 管理者でなければ一般ユーザーメニューへリダイレクト
+            redirect("UserMenu.do");
+        }
     }
 }
