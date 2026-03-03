@@ -234,19 +234,21 @@ table {
              // 優先度の数字が大きい順にソート
              userPriorityList.sort((entry1, entry2) -> Integer.parseInt(entry2.getValue()) - Integer.parseInt(entry1.getValue()));
              %>
-             <%
-             for (Map.Entry<String, String> entry : userPriorityList) {
+             <% for (Map.Entry<String, String> entry : userPriorityList) {
              String userName = entry.getKey();
              String priorityValue = entry.getValue();
-             String priority = priorityValue.equals("3") ? "高い" : priorityValue.equals("2") ? "やや高い" : "普通";
+             String priority = priorityValue.equals("3") ? "高い" :
+             priorityValue.equals("2") ? "やや高い" : "普通";
+             if (userName != null && !userName.trim().isEmpty()) {
              %>
-              <tr class="input-text">
-                <td style="padding-right: 50px;" style="width: 30%"><%= userName %></td>
-                <td style="width: 50%">優先度：<%= priority %></td>
-              </tr>
-            <%
-            }
-            %>
+             <tr class="input-text">
+               <td style="padding-right: 50px;" style="width: 30%">
+                 <%= userName %>
+               </td>
+               <td style="width: 50%">優先度：<%= priority %>
+               </td>
+             </tr>
+             <% } } %>
                 </table>
         </table>
         </div>

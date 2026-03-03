@@ -18,27 +18,24 @@
             <script type="text/javascript" src="js/jquery-3.6.4.min.js"></script>
             <script type="text/javascript" src="jquery-ui/jquery-ui.js"></script>
             <script type="text/javascript" src="js/common.js"></script>
-            <%
-              /* ---------------------------------------------------------------- * アクション種別の判定 * request_name
-              の値をもとに処理種別とページタイトルを決定する。 * 登録 → ins * 修正 → update * 確定 → delete（退職処理） * メール送信 → send *
-              ---------------------------------------------------------------- */ 
-              String
-              requestName=webBean.txt("request_name"); String actionType="ins" .equals(requestName) ? "ins" : "修正"
-              .equals(requestName) ? "update" : "確定" .equals(requestName) ? "delete" : "メール送信" .equals(requestName)
-              ? "send" : requestName.equals("登録") ? "ins" : "unknown" ; // request_name がそのまま来る場合と日本語名で来る場合の両方に対応 if
-              ("ins".equals(webBean.txt("request_cmd"))) actionType="ins" ; if
-              ("update".equals(webBean.txt("request_cmd"))) actionType="update" ; if
-              ("delete".equals(webBean.txt("request_cmd"))) actionType="delete" ; String actionBtn="メール送信"
-              .equals(requestName) ? "go_mail" : "go_submit" ; String pageTitle="delete" .equals(actionType) ? "退職処理 確認"
-              : "update" .equals(actionType) ? "ユーザー情報 修正確認" : "ins" .equals(actionType) ? "ユーザー情報 登録確認" : "ユーザー情報 確認" ;
-              String btnLabel="delete" .equals(actionType) ? "確定" : "メール送信" .equals(requestName) ? "メール送信" : "ins"
-              .equals(actionType) ? "登録" : "修正" ; /* admin 値の表示ラベル（"1" → 管理者、それ以外 → 一般） */ String
+            <% /* アクション種別の判定 */ String requestName=webBean.txt("request_name"); String actionType="unknown" ; if
+              ("ins".equals(requestName) || "登録" .equals(requestName) || "ins" .equals(webBean.txt("request_cmd"))) {
+              actionType="ins" ; } else if ("update".equals(requestName) || "修正" .equals(requestName) || "update"
+              .equals(webBean.txt("request_cmd"))) { actionType="update" ; } else if ("delete".equals(requestName)
+              || "確定" .equals(requestName) || "delete" .equals(webBean.txt("request_cmd"))) { actionType="delete" ; }
+              else if ("send".equals(requestName) || "メール送信" .equals(requestName)) { actionType="send" ; } String
+              actionBtn="メール送信" .equals(requestName) ? "go_mail" : "go_submit" ; String pageTitle="ユーザー情報 確認" ; if
+              ("delete".equals(actionType)) { pageTitle="退職処理 確認" ; } else if ("update".equals(actionType)) {
+              pageTitle="ユーザー情報 修正確認" ; } else if ("ins".equals(actionType)) { pageTitle="ユーザー情報 登録確認" ; } String
+              btnLabel="修正" ; if ("delete".equals(actionType)) { btnLabel="確定" ; } else if ("メール送信".equals(requestName))
+              { btnLabel="メール送信" ; } else if ("ins".equals(actionType)) { btnLabel="登録" ; } String
               adminVal=webBean.txt("admin"); String adminLabel="1" .equals(adminVal) ? "管理者" : "一般" ; /*
               退職予定日のフォーマット変換（yyyyMMdd → yyyy/MM/dd） */ String leaveDate=WebUtil.htmlEscape(webBean.txt("leave_date"));
               String formatLeaveDate="" ; if (leaveDate !=null && leaveDate.length()>= 8) {
-              formatLeaveDate = leaveDate.substring(0,4) + "/" + leaveDate.substring(4,6) + "/" +
-              leaveDate.substring(6,8);
+              formatLeaveDate = leaveDate.substring(0, 4) + "/" + leaveDate.substring(4, 6) + "/" +
+              leaveDate.substring(6, 8);
               }
+              String userInfoId = webBean.txt("user_info_id");
               %>
               <title>
                 <%= pageTitle %>
@@ -236,8 +233,7 @@
             <div class="container">
               <!-- 戻るボタン -->
               <div class="new-btn">
-                <input type="button" value="　戻る　" onclick="go_list('return','<%= actionType %>','<%= webBean.txt("
-                  user_info_id") %>')" />
+                <input type="button" value="　戻る　" onclick="go_list('return','<%= actionType %>','<%= userInfoId %>')" />
               </div>
 
               <!-- ヘッダー -->
@@ -281,7 +277,7 @@
                         <% } %>
                   </div>
 
-                  	<!-- ============================================================
+                  <!-- ============================================================
          			登録・修正確認：入力された全項目を表示
     				============================================================ -->
                   <% } else { %>
@@ -298,7 +294,7 @@
                         <tr>
                           <td class="style_head3 style_head_size">氏名</td>
                           <td class="input-text">
-                            <%= webBean.txt("last_name") %>　<%= webBean.txt("middle_name") %>　<%=
+                            <%= webBean.txt("last_name") %> <%= webBean.txt("middle_name") %> <%=
                                   webBean.txt("first_name") %>
                           </td>
                         </tr>
@@ -306,7 +302,7 @@
                         <tr>
                           <td class="style_head3 style_head_size">氏名よみ</td>
                           <td class="input-text">
-                            <%= webBean.txt("last_name_kana") %>　<%= webBean.txt("middle_name_kana") %>　<%=
+                            <%= webBean.txt("last_name_kana") %> <%= webBean.txt("middle_name_kana") %> <%=
                                   webBean.txt("first_name_kana") %>
                           </td>
                         </tr>
@@ -364,8 +360,7 @@
                       <!-- 確定ボタン -->
                       <div class="button <%= " delete".equals(actionType) ? "delete-btn" : "" %>">
                         <input type="button" id="submitButton" value="<%= btnLabel %>"
-                          onclick="<%= actionBtn %>('go_next','<%= actionType %>','<%= webBean.txt(" user_info_id")
-                          %>')" />
+                          onclick="<%= actionBtn %>('go_next','<%= actionType %>','<%= userInfoId %>')" />
                       </div>
 
               </form>

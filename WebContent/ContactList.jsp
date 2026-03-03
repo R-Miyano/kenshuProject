@@ -322,8 +322,8 @@ footer {
 					    ContactDao dao = (ContactDao) item;
 					%>
 					<tr class="list_tr">
-						<td class="list_text"><%=WebUtil.htmlEscape(dao.getLastName())%>・<%=WebUtil.htmlEscape(dao.getFirstName())%></td>
-						<td class="list_text"><%=WebUtil.htmlEscape(dao.getLastNameKana())%>・<%=WebUtil.htmlEscape(dao.getFirstNameKana())%></td>
+						<td class="list_text"><%=WebUtil.htmlEscape(dao.getLastName())%> <%=WebUtil.htmlEscape(dao.getMiddleName())%> <%=WebUtil.htmlEscape(dao.getFirstName())%></td>
+						<td class="list_text"><%=WebUtil.htmlEscape(dao.getLastNameKana())%> <%=WebUtil.htmlEscape(dao.getMiddleNameKana())%> <%=WebUtil.htmlEscape(dao.getFirstNameKana())%></td>
 						<td class="list_text"><%=WebUtil.htmlEscape(dao.getPhoneNumber())%></td>
 						<td class="list_text"><%=WebUtil.htmlEscape(dao.getEmail())%></td>
 						<td class="list_btn"><input type="button" value="編集"

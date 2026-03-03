@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 
 import jp.patasys.common.AtareSysException;
 import jp.patasys.common.db.DbBase;
-import jp.patasys.common.db.DbI;
 import jp.patasys.common.db.GetNumber;
 import jp.patasys.common.http.WebBean;
 import jp.patasys.common.util.Sup;
@@ -112,7 +111,7 @@ public class UserInfoDetail extends ControllerBase {
                         forward("ViewUserList.jsp");
                     }
                 } else if ("menu".equals(bean.value("action_cmd"))) {
-                    redirect("MenuAdmin.do");
+                    redirect("UserMenu.do");
                 }
             }
 
@@ -126,7 +125,7 @@ public class UserInfoDetail extends ControllerBase {
                         if (inputCheck(dao)) {
                             bean.setMessage("この内容で登録します。よろしいですか？");
                             bean.setValue("request_name", "登録");
-                            forward("UserInfoDetail_3.jsp");
+                            forward("UserInfoConfirm.jsp");
                         } else {
                             bean.setError("入力内容に誤りがあります");
                             forward("UserInfoDetail_1.jsp");
@@ -139,7 +138,7 @@ public class UserInfoDetail extends ControllerBase {
 
                             bean.setMessage("この内容で修正します。よろしいですか？");
                             bean.setValue("request_name", "修正");
-                            forward("UserInfoDetail_3.jsp");
+                            forward("UserInfoConfirm.jsp");
                         } else {
                             bean.setError("入力内容に誤りがあります");
                             forward("UserInfoDetail_1.jsp");
@@ -159,7 +158,7 @@ public class UserInfoDetail extends ControllerBase {
                         if (inputCheck(dao)) {
                             bean.setMessage("退職予定日を確定します。よろしいですか？");
                             bean.setValue("request_name", "確定");
-                            forward("UserInfoDetail_3.jsp");
+                            forward("UserInfoConfirm.jsp");
                         } else {
                             bean.setError("入力内容に誤りがあります");
                             forward("UserInfoDetail_2.jsp");
@@ -170,13 +169,28 @@ public class UserInfoDetail extends ControllerBase {
                 }
             }
 
-            else if ("UserInfoDetail_3".equals(bean.value("form_name"))) {
+            else if ("UserInfoDetail_3".equals(bean.value("form_name"))
+                    || "UserInfoConfirm".equals(bean.value("form_name"))) {
                 if ("go_next".equals(bean.value("action_cmd"))) {
                     if ("ins".equals(bean.value("request_cmd"))) {
-                        setInputInfo2Dao2Web();
-                        signUp();
-                        scheduleInsert();
-                        redirect("ViewUserList.do");
+                        try {
+                            DbBase.dbBeginTran();
+                            setInputInfo2Dao2Web();
+                            if (signUp() && scheduleInsert()) {
+                                DbBase.dbCommitTran();
+                                redirect("ViewUserList.do");
+                            } else {
+                                DbBase.dbRollbackTran();
+                                bean.setError("登録処理に失敗しました。");
+                                bean.setValue("request_name", "登録");
+                                forward("UserInfoDetail_1.jsp");
+                            }
+                        } catch (AtareSysException e) {
+                            DbBase.dbRollbackTran();
+                            bean.setError("処理中にエラーが発生しました: " + e.getMessage());
+                            bean.setValue("request_name", "登録");
+                            forward("UserInfoDetail_1.jsp");
+                        }
                     } else if ("update".equals(bean.value("request_cmd"))) {
                         if (checkDataMatching()) {
                             setInputInfo2Dao2Web();
@@ -257,7 +271,7 @@ public class UserInfoDetail extends ControllerBase {
         bean.setValue("maiden_name_kana", dao.getMaidenNameKana());
         bean.setValue("insert_user_id", dao.getInsertUserId());
         bean.setValue("memail", dao.getMemail());
-        bean.setValue("admin", dao.getAdmin());
+        bean.setValue("admin", String.valueOf(dao.getAdmin()));
         bean.setValue("password_user", dao.getPasswordUser());
         bean.setValue("password", dao.getPassword());
         bean.setValue("leave_date", dao.getLeaveDate());
@@ -365,36 +379,40 @@ public class UserInfoDetail extends ControllerBase {
                 }
             }
         } else if ("delete".equals(bean.value("request_cmd"))) {
-            // 日付フォーマットの指定
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
             String leaveDateStr = bean.value("leave_date");
 
-            // `leave_date` が数字でない場合
-            if (!isNumeric(leaveDateStr)) {
-                errors.put("leave_date", "数字を入力してください");
-            } else {
-                try {
-                    // `leave_date` が空文字でないかチェック
-                    if (leaveDateStr == null || leaveDateStr.trim().isEmpty()) {
-                        // 空文字の場合はエラーメッセージを設定せずに `true` を返す
-                        return true;
-                    } else {
-                        // `leave_date` を Date 型に変換
-                        Date leaveDate = dateFormat.parse(leaveDateStr);
-
-                        // カレンダーを使用して昨日の日付を取得
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.add(Calendar.DATE, -1); // 昨日の日付に設定
-                        Date yesterday = calendar.getTime(); // 昨日の日付を取得
-
-                        // `leave_date` が昨日以前の日付である場合
-                        if (leaveDate.before(yesterday)) {
-                            errors.put("leave_date", "本日以降の日付を入力してください");
+            if (leaveDateStr != null && !leaveDateStr.trim().isEmpty()) {
+                Date leaveDate = null;
+                String[] formats = { "yyyyMMdd", "yyyy/MM/dd", "yyyy-MM-dd", "yyyy年MM月dd日" };
+                for (String format : formats) {
+                    try {
+                        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+                        dateFormat.setLenient(false);
+                        leaveDate = dateFormat.parse(leaveDateStr);
+                        if (leaveDate != null) {
+                            break;
                         }
+                    } catch (ParseException e) {
+                        // 次のフォーマットを試す
                     }
-                } catch (ParseException e) {
-                    // `leave_date` の解析に失敗した場合
-                    errors.put("leave_date", "日付の形式が不正です");
+                }
+
+                if (leaveDate == null) {
+                    errors.put("leave_date", "日付の形式が不正です（例: yyyyMMdd, yyyy/MM/dd, yyyy-MM-dd, yyyy年MM月dd日）");
+                } else {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(Calendar.DATE, -1);
+                    Date yesterday = calendar.getTime();
+
+                    if (leaveDate.before(yesterday)) {
+                        errors.put("leave_date", "本日以降の日付を入力してください");
+                    } else {
+                        // 今後のDB登録や確認画面表示のために「yyyyMMdd」に統一する
+                        String formattedDate = new SimpleDateFormat("yyyyMMdd").format(leaveDate);
+                        bean.setValue("leave_date", formattedDate);
+                        pUserInfoDao.setLeaveDate(formattedDate);
+                        bean.setValue("input_info", Sup.serialize(pUserInfoDao));
+                    }
                 }
             }
         }
@@ -508,7 +526,8 @@ public class UserInfoDetail extends ControllerBase {
         dao.setMaidenNameKana(bean.value("maiden_name_kana"));
         dao.setInsertUserId(bean.value("insert_user_id"));
         dao.setMemail(bean.value("memail"));
-        dao.setAdmin(Integer.parseInt(DbI.num(bean.value("admin"))));
+        String adminStr = bean.value("admin");
+        dao.setAdmin(Integer.parseInt(adminStr == null || adminStr.isEmpty() ? "0" : adminStr));
         dao.setPasswordUser(bean.value("password_user"));
         dao.setPassword(bean.value("password"));
         dao.setLeaveDate(bean.value("leave_date"));
@@ -546,6 +565,7 @@ public class UserInfoDetail extends ControllerBase {
             DbBase.dbBeginTran();
             dao.dbUpdate(userInfoId);
             DbBase.dbCommitTran();
+            bean.setMessage("ユーザー情報を更新しました。");
             redirect("ViewUserList.do");
         } catch (Exception e) {
             DbBase.dbRollbackTran();
@@ -569,9 +589,11 @@ public class UserInfoDetail extends ControllerBase {
             dao.dbUpdate(userInfoId);
             if (leaveDate == null || leaveDate.trim().isEmpty()) {
                 dao.dbCancelDelete(userInfoId);
+                bean.setMessage("退職予定月の設定を取り消しました。");
                 redirect("ViewUserList.do");
             } else {
                 dao.dbDelete(userInfoId);
+                bean.setMessage("ユーザー情報を削除しました。");
                 redirect("ViewUserList.do");
             }
         } catch (Exception e) {
@@ -599,7 +621,7 @@ public class UserInfoDetail extends ControllerBase {
         bean.setValue("maiden_name_kana", dao.getMaidenNameKana());
         bean.setValue("insert_user_id", dao.getInsertUserId());
         bean.setValue("memail", dao.getMemail());
-        bean.setValue("admin", dao.getAdmin());
+        bean.setValue("admin", String.valueOf(dao.getAdmin()));
         bean.setValue("password_user", dao.getPasswordUser());
         bean.setValue("password", dao.getPassword());
         bean.setValue("leave_date", dao.getLeaveDate());
@@ -619,7 +641,7 @@ public class UserInfoDetail extends ControllerBase {
         bean.setValue("maiden_name_kana", dao.getMaidenNameKana());
         bean.setValue("insert_user_id", dao.getInsertUserId());
         bean.setValue("memail", dao.getMemail());
-        bean.setValue("admin", dao.getAdmin());
+        bean.setValue("admin", String.valueOf(dao.getAdmin()));
         bean.setValue("password_user", dao.getPasswordUser());
         bean.setValue("password", dao.getPassword());
     }

@@ -35,8 +35,7 @@ import jp.swell.dao.RoomDao;
  * @author PATAPATA
  * @version 1.0
  */
-public class RoomList extends ControllerBase
-{
+public class RoomList extends ControllerBase {
     /**
      * jp.patasys.alumni.controller.HttpServlet のメソッドをオーバライドする。
      * オーバライドしない場合は、デフォルトが設定される。.
@@ -47,13 +46,13 @@ public class RoomList extends ControllerBase
      * doActionの前に呼ばれる。
      */
     @Override
-    public void doInit()
-    {
+    public void doInit() {
         setLoginNeeds(true); // この処理にはログインが必要かどうか
         setHttpNeeds(false); // この処理はhttpでなければならないか
         setHttpsNeeds(false); // この処理はhttps でなければならないか。公開時にはtrueにする
         setUsecache(false); // この処理はクライアントのキャッシュを認めるか
     }
+
     /**
      * jp.patasys.cloudbiz.common.ControllerBase のメソッドをオーバライドする。
      * ここで、コントローラの処理を記述する.
@@ -61,88 +60,68 @@ public class RoomList extends ControllerBase
      * @throws Exception エラー
      */
     @Override
-    public void doActionProcess() throws AtareSysException
-    {
+    public void doActionProcess() throws AtareSysException {
         WebBean bean = getWebBean();
-        if ("RoomList".equals(bean.value("form_name")))
-        {
+        if ("RoomList".equals(bean.value("form_name"))) {
             bean.trimAllItem();
-            if ("search".equals(bean.value("action_cmd")))
-            {
+            if ("search".equals(bean.value("action_cmd"))) {
                 bean.setValue("pageNo", "1");
                 searchList();
                 forward("RoomList.jsp");
-            }
-            else if ("next".equals(bean.value("action_cmd")))
-            {
+            } else if ("next".equals(bean.value("action_cmd"))) {
                 bean.setValue("pageNo", calcPageNo(bean.value("pageNo"), 1));
                 searchList();
                 forward("RoomList.jsp");
-            }
-            else if ("jump".equals(bean.value("action_cmd")))
-            {
+            } else if ("jump".equals(bean.value("action_cmd"))) {
                 searchList();
                 forward("RoomList.jsp");
-            }
-            else if ("prior".equals(bean.value("action_cmd")))
-            {
+            } else if ("prior".equals(bean.value("action_cmd"))) {
                 bean.setValue("pageNo", calcPageNo(bean.value("pageNo"), -1));
                 searchList();
                 forward("RoomList.jsp");
-            }
-            else if ("sort".equals(bean.value("action_cmd")))
-            {
+            } else if ("sort".equals(bean.value("action_cmd"))) {
                 searchList();
                 forward("RoomList.jsp");
-            }
-            else if ("clear".equals(bean.value("action_cmd")))
-            {
+            } else if ("clear".equals(bean.value("action_cmd"))) {
                 formClear();
                 searchList();
                 forward("RoomList.jsp");
-            }
-            else if ("return".equals(bean.value("action_cmd")))
-            {
-                redirect("MenuAdmin.do");
-            }
-            else
-            {
+            } else if ("return".equals(bean.value("action_cmd"))) {
+                redirect("UserMenu.do");
+            } else {
                 searchList();
                 forward("RoomList.jsp");
             }
-        }
-        else if ("RoomDetail".equals(bean.value("form_name")) || "UserInfoDetail_2".equals(bean.value("form_name")) || "UserInfoDetail_3".equals(bean.value("form_name")))
-        {
+        } else if ("RoomDetail".equals(bean.value("form_name")) || "UserInfoDetail_2".equals(bean.value("form_name"))
+                || "UserInfoDetail_3".equals(bean.value("form_name"))) {
             setWebBeanFromSerialize(bean.value("search_info"));
             bean = getWebBean();
             searchList();
             forward("RoomList.jsp");
-        }
-        else
-        {
+        } else {
             formInit();
             searchList();
             forward("RoomList.jsp");
         }
     }
+
     /**
      * 最初の画面を表示する。.
      *
      * @throws AtareSysException
      */
-    private void formInit() throws AtareSysException
-    {
+    private void formInit() throws AtareSysException {
         WebBean bean = getWebBean();
         bean.setValue("sort_key", "room_id"); /* 初回のソートキーを入れる */
         bean.setValue("sort_order", "asc");
-        bean.setValue("lineCount", SystemUserInfoValue.getUserInfoValue(getLoginUserId(), "RoomList", "lineCount", "100"));
+        bean.setValue("lineCount",
+                SystemUserInfoValue.getUserInfoValue(getLoginUserId(), "RoomList", "lineCount", "100"));
     }
-   
+
     /**
      * フィールドをクリアする。.
      */
-    private void formClear() throws AtareSysException
-    {
+    private void formClear() throws AtareSysException {
         WebBean bean = getWebBean();
         bean.setValue("list_search_room_name", "");
         bean.setValue("lineCount", "");
@@ -155,14 +134,11 @@ public class RoomList extends ControllerBase
      *
      * @return errors HashMapにエラーフィールドをキーとしてエラーメッセージを返す
      */
-    private HashMap<String, String> inputCheck()
-    {
+    private HashMap<String, String> inputCheck() {
         WebBean bean = getWebBean();
         HashMap<String, String> errors = bean.getItemErrors();
-        if (bean.value("list_search_room_name").length() > 0)
-        {
-            if (100 < bean.value("list_search_room_name").length())
-            {
+        if (bean.value("list_search_room_name").length() > 0) {
+            if (100 < bean.value("list_search_room_name").length()) {
                 errors.put("list_search_room_name", "部屋名の入力内容が長すぎます。");
             }
         }
@@ -172,34 +148,32 @@ public class RoomList extends ControllerBase
     /**
      * 検索を行いbeanに格納する。.
      */
-    private void searchList() throws AtareSysException
-    {
+    private void searchList() throws AtareSysException {
         WebBean bean = getWebBean();
         HashMap<String, String> errors;
 
         errors = inputCheck();
-        if (errors.size() > 0)
-        {
+        if (errors.size() > 0) {
             bean.setValue("errors", errors);
             return;
         }
         LinkedHashMap<String, String> sortKey = sortKey();
         RoomDao dao = new RoomDao();
-        dao.setRoomName("%" + bean.value("list_search_room_name")+ "%");
+        // 検索フィールドが空でない場合のみ、LIKE 検索用の条件をセットする
+        String searchRoomName = bean.value("list_search_room_name");
+        if (searchRoomName != null && !searchRoomName.isEmpty()) {
+            dao.setRoomName("%" + searchRoomName + "%");
+        }
 
         DaoPageInfo daoPageInfo = new DaoPageInfo();
-        if (!Validate.isInteger(bean.value("lineCount")))
-        {
+        if (!Validate.isInteger(bean.value("lineCount"))) {
             bean.setValue("lineCount", "20");
         }
         daoPageInfo.setLineCount(Integer.parseInt(bean.value("lineCount")));
         SystemUserInfoValue.setUserInfoValue(getLoginUserId(), "RoomList", "lineCount", bean.value("lineCount"));
-        if (!Validate.isInteger(bean.value("pageNo")))
-        {
+        if (!Validate.isInteger(bean.value("pageNo"))) {
             daoPageInfo.setPageNo(1);
-        }
-        else
-        {
+        } else {
             daoPageInfo.setPageNo(Integer.parseInt(bean.value("pageNo")));
         }
         ArrayList<RoomDao> listData = RoomDao.dbSelectList(dao, sortKey, daoPageInfo);
@@ -219,60 +193,42 @@ public class RoomList extends ControllerBase
      *
      * @return ソート順を格納した配列を返す
      */
-    private LinkedHashMap<String, String> sortKey()
-    {
+    private LinkedHashMap<String, String> sortKey() {
         WebBean bean = getWebBean();
         String key = "";
         LinkedHashMap<String, String> sort_key = new LinkedHashMap<String, String>(); /* この配列にソートキーとソートオーダーを入れる */
-        if (bean.value("sort_key").length() == 0 && bean.value("sort_key_old").length() == 0) return null;
-        if (bean.value("sort_key_old").length() > 0)
-        {
-            if (bean.value("sort_key").length() > 0)
-            {
-                if (bean.value("sort_key").equals(bean.value("sort_key_old")))
-                {
+        if (bean.value("sort_key").length() == 0 && bean.value("sort_key_old").length() == 0)
+            return null;
+        if (bean.value("sort_key_old").length() > 0) {
+            if (bean.value("sort_key").length() > 0) {
+                if (bean.value("sort_key").equals(bean.value("sort_key_old"))) {
                     // 同一ソートキー（フリップフロップ）
                     key = bean.value("sort_key_old");
-                    if ("desc".equals(bean.value("sort_order")))
-                    {
+                    if ("desc".equals(bean.value("sort_order"))) {
                         sort_key.put(key, "asc");
-                    }
-                    else
-                    {
+                    } else {
                         sort_key.put(key, "desc");
                     }
-                }
-                else
-                {
+                } else {
                     // 新たなソートキー
                     key = bean.value("sort_key");
                     sort_key.put(key, "asc");
                 }
-            }
-            else
-            {
+            } else {
                 // 引き継ぎ
                 key = bean.value("sort_key_old");
-                if ("asc".equals(bean.value("sort_order")))
-                {
+                if ("asc".equals(bean.value("sort_order"))) {
                     sort_key.put(key, "asc");
-                }
-                else
-                {
+                } else {
                     sort_key.put(key, "desc");
                 }
             }
-        }
-        else
-        {
+        } else {
             // 初期値
             key = bean.value("sort_key");
-            if ("asc".equals(bean.value("sort_order")))
-            {
+            if ("asc".equals(bean.value("sort_order"))) {
                 sort_key.put(key, "asc");
-            }
-            else
-            {
+            } else {
                 sort_key.put(key, "desc");
             }
         }
@@ -286,24 +242,18 @@ public class RoomList extends ControllerBase
      * ページ番号を加算減算する
      *
      * @param $page_no
-     *        現在のページ番号
+     *                 現在のページ番号
      * @param $add
-     *        加算減算する値
+     *                 加算減算する値
      * @return 結果のページを返す
      */
-    private String calcPageNo(String pageNo, int add)
-    {
+    private String calcPageNo(String pageNo, int add) {
         int ret;
-        if (null == pageNo)
-        {
+        if (null == pageNo) {
             pageNo = "1";
-        }
-        else if ("".equals(pageNo))
-        {
+        } else if ("".equals(pageNo)) {
             pageNo = "1";
-        }
-        else if (!Validate.isInteger(pageNo))
-        {
+        } else if (!Validate.isInteger(pageNo)) {
             pageNo = "1";
         }
         ret = Integer.parseInt(pageNo);

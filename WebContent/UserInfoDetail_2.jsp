@@ -254,11 +254,11 @@ input.error {
           </tr>
           <tr>
             <td class="style_head3 style_head_size" style="width: 30%"> 氏名 </td>
-            <td class="input-text" style="width: 70%"> <%=webBean.txt("last_name")%>　<%=webBean.txt("middle_name")%>　<%=webBean.txt("first_name")%> </td>
+            <td class="input-text" style="width: 70%"> <%=webBean.txt("last_name")%> <%=webBean.txt("middle_name")%> <%=webBean.txt("first_name")%> </td>
           </tr>
           <tr>
             <td class="style_head3 style_head_size" style="width: 30%"> 氏名よみ </td>
-            <td class="input-text" style="width: 70%"> <%=webBean.txt("last_name_kana")%>　<%=webBean.txt("middle_name_kana")%>　<%=webBean.txt("first_name_kana")%> </td>
+            <td class="input-text" style="width: 70%"> <%=webBean.txt("last_name_kana")%> <%=webBean.txt("middle_name_kana")%> <%=webBean.txt("first_name_kana")%> </td>
           </tr>
            <% 
                String maidenName = webBean.txt("maiden_name").trim();

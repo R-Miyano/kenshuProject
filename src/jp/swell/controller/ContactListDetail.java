@@ -18,19 +18,19 @@ import jp.swell.dao.ContactDao;
  * 連絡先(Contact)の「一覧 → 入力 → 確認 → 確定」フローを司るコントローラ。
  * 
  * ■方針（UserInfoDetail と同じ運び方）
- *   - 一覧(=ContactList.jsp)から「編集/削除/確認」で飛んでくるときは main_key を受け取り、
- *     DBから読み込み → 画面項目へ反映 → select_info / input_info に同一内容をシリアライズして持ち回す
- *   - 入力画面(=ContactListDetail_1.jsp)で編集し、次へ進むときは
- *     画面値 → DAO → input_info に保存してから確認画面へ
- *   - 確認画面(=ContactListDetail_3.jsp)の確定押下で
- *     input_info を画面に復元（安全のため）→ DB処理(insert/update/delete) → 一覧へリダイレクト
- *   - 競合チェックは select_info（最初に読んだ姿）と最新DBの比較で行う
+ * - 一覧(=ContactList.jsp)から「編集/削除/確認」で飛んでくるときは main_key を受け取り、
+ * DBから読み込み → 画面項目へ反映 → select_info / input_info に同一内容をシリアライズして持ち回す
+ * - 入力画面(=ContactListDetail_1.jsp)で編集し、次へ進むときは
+ * 画面値 → DAO → input_info に保存してから確認画面へ
+ * - 確認画面(=ContactListDetail_3.jsp)の確定押下で
+ * input_info を画面に復元（安全のため）→ DB処理(insert/update/delete) → 一覧へリダイレクト
+ * - 競合チェックは select_info（最初に読んだ姿）と最新DBの比較で行う
  * 
  * ■隠し項目の持ち方（重要）
- *   - main_key: 一覧から来た主キー（id と同義だが一覧遷移時の受け渡しに使う）
- *   - id: 画面/確認で持ち回すID（空なら main_key をフォールバック）
- *   - input_info: 編集途中のDAOスナップショット（確定直前の復元元）
- *   - select_info: 編集開始時点のDAOスナップショット（楽観ロック用途）
+ * - main_key: 一覧から来た主キー（id と同義だが一覧遷移時の受け渡しに使う）
+ * - id: 画面/確認で持ち回すID（空なら main_key をフォールバック）
+ * - input_info: 編集途中のDAOスナップショット（確定直前の復元元）
+ * - select_info: 編集開始時点のDAOスナップショット（楽観ロック用途）
  */
 public class ContactListDetail extends ControllerBase {
 
@@ -96,7 +96,7 @@ public class ContactListDetail extends ControllerBase {
                     }
 
                 } else if ("menu".equals(bean.value("action_cmd"))) {
-                    redirect("MenuAdmin.do");
+                    redirect("UserMenu.do");
                     return;
 
                 } else {
@@ -215,6 +215,7 @@ public class ContactListDetail extends ControllerBase {
     /**
      * DBの1件を読み込み、画面項目へ展開すると同時に
      * select_info / input_info に同一のスナップショットを積む。
+     * 
      * @return 取得できた場合 true
      */
     private boolean setDb2Web() throws AtareSysException {
@@ -330,6 +331,7 @@ public class ContactListDetail extends ControllerBase {
 
     /**
      * 楽観ロック用：編集開始時点（select_info）と最新DBの内容を比較し一致を確認する。
+     * 
      * @return 一致していれば true
      */
     private boolean checkDataMatching() throws AtareSysException {
@@ -345,6 +347,7 @@ public class ContactListDetail extends ControllerBase {
 
     /**
      * 入力チェック（UserInfo と同等の粒度）
+     * 
      * @return エラーMap（空ならOK）
      */
     private HashMap<String, String> inputCheck(ContactDao pContactDao) throws AtareSysException {

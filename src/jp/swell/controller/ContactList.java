@@ -66,7 +66,7 @@ public class ContactList extends ControllerBase {
                 formClear();
                 searchList();
             } else if ("return".equals(action)) {
-                redirect("MenuAdmin.do");
+                redirect("UserMenu.do");
                 return;
             } else {
                 // 初期表示または未知のactionはそのまま検索
@@ -100,7 +100,7 @@ public class ContactList extends ControllerBase {
         bean.setValue("form_name", "ContactList");
 
         // ★UserInfo流に合わせる：初期のソートは「氏名よみ（かな）」相当
-        //   Contactでは last_name_kana / first_name_kana を使うためキー名は last_name_kana に統一
+        // Contactでは last_name_kana / first_name_kana を使うためキー名は last_name_kana に統一
         bean.setValue("sort_key", "last_name_kana");
         bean.setValue("sort_order", "asc");
 
@@ -187,7 +187,7 @@ public class ContactList extends ControllerBase {
         }
 
         // ★ソートの適用（JSPからの sort_key / sort_order を使用）
-        //   対応キー：last_name_kana / last_name / email / phone_number など最低限を用意
+        // 対応キー：last_name_kana / last_name / email / phone_number など最低限を用意
         String sortKey = bean.value("sort_key");
         String sortKeyOld = bean.value("sort_key_old");
         String sortOrder = bean.value("sort_order");

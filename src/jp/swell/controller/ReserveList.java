@@ -43,7 +43,7 @@ public class ReserveList extends ControllerBase {
         if ("ReserveList".equals(bean.value("form_name"))) {
             bean.trimAllItem();
             if ("top".equals(bean.value("action_cmd"))) {
-                redirect("MenuAdmin.do");
+                redirect("UserMenu.do");
                 return; // メソッドを終了
             } else if ("sort".equals(bean.value("action_cmd"))) {
                 searchReserve();
@@ -152,7 +152,7 @@ public class ReserveList extends ControllerBase {
         WebBean bean = getWebBean();
         HashMap<String, String> errors;
         bean.setValue("list_search", "");
-        
+
         errors = inputCheck();
         if (errors.size() > 0) {
             bean.setValue("errors", errors);
@@ -325,6 +325,7 @@ public class ReserveList extends ControllerBase {
 
     /**
      * 予約情報を削除するメソッド
+     * 
      * @throws AtareSysException
      */
     private void deleteReseveInfo() throws AtareSysException {
@@ -353,7 +354,7 @@ public class ReserveList extends ControllerBase {
             // `dbFileDelete`メソッドを呼び出す
             reserveFileDao.dbFileDelete(fileId);
 
-            //`dbFileDelete`メソッドを呼び出す
+            // `dbFileDelete`メソッドを呼び出す
             fileDao.dbDelete(fileId);
         }
 
@@ -370,9 +371,9 @@ public class ReserveList extends ControllerBase {
      * ページ番号を加算減算する
      *
      * @param $page_no
-     *        現在のページ番号
+     *                 現在のページ番号
      * @param $add
-     *        加算減算する値
+     *                 加算減算する値
      * @return 結果のページを返す
      */
     private String calcPageNo(String pageNo, int add) {

@@ -357,32 +357,16 @@ public class RoomDao implements Serializable {
                 + "room.update_date as room___update_date, "
                 + "room.update_user_id as room___update_user_id "
                 + "FROM room "
-                + "WHERE room_id = ?";
+                + "WHERE room.room_id = " + DbS.chara(pRoomId);
 
-        try (PreparedStatement pstmt = (PreparedStatement) DbBase.getDbConnection().prepareStatement(sql)) {
-            pstmt.setString(1, pRoomId);
-
-            try (ResultSet rs = (ResultSet) pstmt.executeQuery()) {
-                if (!rs.next()) {
-                    return false;
-                }
-
-                HashMap<String, String> map = new HashMap<>();
-                map.put("room___room_id", rs.getString("room___room_id"));
-                map.put("room___room_name", rs.getString("room___room_name"));
-                map.put("room___insert_date", rs.getString("room___insert_date"));
-                map.put("room___insert_user_id", rs.getString("room___insert_user_id"));
-                map.put("room___update_date", rs.getString("room___update_date"));
-                map.put("room___update_user_id", rs.getString("room___update_user_id"));
-
-                setRoomDaoForJoin(map, this);
-                return true;
-            } catch (SQLException e) {
-                throw new AtareSysException("データベースクエリの実行中にエラーが発生しました: " + e.getMessage(), e);
-            }
-        } catch (SQLException e) {
-            throw new AtareSysException("データベース接続中にエラーが発生しました: " + e.getMessage(), e);
+        List<HashMap<String, String>> rs = DbBase.dbSelect(sql);
+        if (rs == null || rs.isEmpty()) {
+            return false;
         }
+
+        HashMap<String, String> map = rs.get(0);
+        setRoomDaoForJoin(map, this);
+        return true;
     }
 
     /**
@@ -496,9 +480,7 @@ public class RoomDao implements Serializable {
      * @throws AtareSysException エラーs
      */
     public boolean dbDelete(String pRoomId) throws AtareSysException {
-        String sql = "UPDATE room set "
-                + "is_deleted = true WHERE room_id = " // "delete from room where "以前までは物理削除になっていた //"UPDATE room set
-                                                       // is_deleted = true"論理削除に変更
+        String sql = "DELETE FROM room WHERE room_id = "
                 + DbS.chara(pRoomId)
                 + "";
 
@@ -560,8 +542,8 @@ public class RoomDao implements Serializable {
             daoPageInfo.setPageNo(daoPageInfo.getMaxPageNo());
         int start = (daoPageInfo.getPageNo() - 1) * daoPageInfo.getLineCount();
         sql = "select "
-                + " room.room_id room___room_id"
-                + ",room.room_name room___room_name"
+                + " room.room_id as room___room_id"
+                + ",room.room_name as room___room_name"
                 + ",room.insert_date as room___insert_date"
                 + ",room.insert_user_id as room___insert_user_id"
                 + ",room.update_date as room___update_date"
@@ -593,8 +575,6 @@ public class RoomDao implements Serializable {
      */
     private String dbWhere() throws AtareSysException {
         StringBuffer where = new StringBuffer(1024);
-
-        where.append("room.is_deleted = false"); // 削除されたtrue以外を画面上に表示 (追加)
 
         if (getRoomId().length() > 0) {
             where.append(where.length() > 0 ? " AND " : "");

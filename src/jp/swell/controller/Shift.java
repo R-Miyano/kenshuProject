@@ -50,20 +50,15 @@ public class Shift extends ControllerBase {
     @Override
     public void doActionProcess() throws AtareSysException {
         WebBean bean = getWebBean();
-        if ("Shift".equals(bean.value("form_name"))) 
-        {
+        if ("Shift".equals(bean.value("form_name"))) {
             bean.trimAllItem();
-            if ("go_next".equals(bean.value("action_cmd"))) 
-            {
-                if ("ins".equals(bean.value("request_cmd"))) 
-                {
+            if ("go_next".equals(bean.value("action_cmd"))) {
+                if ("ins".equals(bean.value("request_cmd"))) {
                     bean.setValue("input_info", Sup.serialize(new ShiftDAO()));
                     bean.setValue("request_name", "登録");
                     forward("ShiftDetail.jsp");
                     return;
-                } 
-                else if ("update".equals(bean.value("request_cmd"))) 
-                {
+                } else if ("update".equals(bean.value("request_cmd"))) {
                     if (!setDb2Web()) {
                         bean.setError("データの取得に失敗しました");
                         forward("Shift.jsp");
@@ -72,52 +67,34 @@ public class Shift extends ControllerBase {
                         forward("ShiftDetail.jsp");
                         return;
                     }
-                } 
-                else if ("delete".equals(bean.value("request_cmd"))) 
-                {
+                } else if ("delete".equals(bean.value("request_cmd"))) {
                     if (!setDb2Web()) {
                         bean.setError("データの取得に失敗しました");
                         forward("Shift.jsp");
-                    } 
-                    else 
-                    {
+                    } else {
                         bean.setValue("request_name", "削除");
                         forward("ShiftDetail_2.jsp");
                         return;
                     }
                 }
-            }
-            else if ("search".equals(bean.value("action_cmd"))) 
-            {
+            } else if ("search".equals(bean.value("action_cmd"))) {
                 bean.setValue("pageNo", "1");
                 searchList();
-            }
-            else if ("next".equals(bean.value("action_cmd"))) 
-            {
+            } else if ("next".equals(bean.value("action_cmd"))) {
                 bean.setValue("pageNo", calcPageNo(bean.value("pageNo"), 1));
                 searchList();
-            }
-            else if ("jump".equals(bean.value("action_cmd"))) 
-            {
+            } else if ("jump".equals(bean.value("action_cmd"))) {
                 searchList();
-            }
-            else if ("prior".equals(bean.value("action_cmd"))) 
-            {
+            } else if ("prior".equals(bean.value("action_cmd"))) {
                 bean.setValue("pageNo", calcPageNo(bean.value("pageNo"), -1));
                 searchList();
-            } 
-            else if ("sort".equals(bean.value("action_cmd"))) 
-            {
+            } else if ("sort".equals(bean.value("action_cmd"))) {
                 searchList();
-            } 
-            else if ("clear".equals(bean.value("action_cmd"))) 
-            {
+            } else if ("clear".equals(bean.value("action_cmd"))) {
                 formClear();
                 searchList();
-            } 
-            else if ("return".equals(bean.value("action_cmd"))) 
-            {
-                redirect("MenuAdmin.do");
+            } else if ("return".equals(bean.value("action_cmd"))) {
+                redirect("UserMenu.do");
                 return;
             }
             formInit();
@@ -125,28 +102,23 @@ public class Shift extends ControllerBase {
             forward("Shift.jsp");
             return;
         }
-        
-        if ("ShiftDetail".equals(bean.value("form_name"))) 
-        {
+
+        if ("ShiftDetail".equals(bean.value("form_name"))) {
             ShiftDAO dao = setWeb2Dao2InputInfo();
-            
-            if ("go_next".equals(bean.value("action_cmd"))) 
-            {
-                if (inputCheck(dao)) 
-                {
-                bean.setValue("request_cmd", bean.value("request_cmd"));
-                bean.setValue("request_name", bean.value("request_name"));
-                forward("ShiftDetail_2.jsp");
-                return;
-            }
-                else 
-                {
+
+            if ("go_next".equals(bean.value("action_cmd"))) {
+                if (inputCheck(dao)) {
+                    bean.setValue("request_cmd", bean.value("request_cmd"));
+                    bean.setValue("request_name", bean.value("request_name"));
+                    forward("ShiftDetail_2.jsp");
+                    return;
+                } else {
                     bean.setError("入力内容に誤りがあります");
                     forward("ShiftDetail.jsp");
                     return;
                 }
-            }
-            else if ("return".equals(bean.value("action_cmd")));
+            } else if ("return".equals(bean.value("action_cmd")))
+                ;
             {
                 formInit();
                 searchList();
@@ -154,13 +126,10 @@ public class Shift extends ControllerBase {
                 return;
             }
         }
-        
-        if ("ShiftDetail_2".equals(bean.value("form_name"))) 
-        {
-            if ("go_next".equals(bean.value("action_cmd"))) 
-            {
-                if ("ins".equals(bean.value("request_cmd"))) 
-                {
+
+        if ("ShiftDetail_2".equals(bean.value("form_name"))) {
+            if ("go_next".equals(bean.value("action_cmd"))) {
+                if ("ins".equals(bean.value("request_cmd"))) {
                     insUserid();
                     bean.rtrimAllItem();
                     bean.setValue("request_name", "新規登録が完了しました");
@@ -168,47 +137,36 @@ public class Shift extends ControllerBase {
                     signUp();
                     forward("ShiftDetail_3.jsp");
                     return;
-                } 
-                else if ("update".equals(bean.value("request_cmd")))
-                {
-                   if (checkDataMatching())
-                   {
-                       setInputInfo2Dao2Web();
-                       bean.setValue("request_name", "登録が完了しました");
-                       dbEdit();
-                       return;
-                   }
-                   else
-                   {
-                       bean.setError("処理中に別のユーザーがデータを変更しました。再度処理を行ってください。");
-                       setDb2Web();
-                       forward("ShiftDetail.jsp");
-                       return;
-                   }
-                }
-                else if ("delete".equals(bean.value("request_cmd"))) 
-                {
+                } else if ("update".equals(bean.value("request_cmd"))) {
+                    if (checkDataMatching()) {
+                        setInputInfo2Dao2Web();
+                        bean.setValue("request_name", "登録が完了しました");
+                        dbEdit();
+                        return;
+                    } else {
+                        bean.setError("処理中に別のユーザーがデータを変更しました。再度処理を行ってください。");
+                        setDb2Web();
+                        forward("ShiftDetail.jsp");
+                        return;
+                    }
+                } else if ("delete".equals(bean.value("request_cmd"))) {
                     bean.setValue("request_name", "削除が完了しました");
                     setInputInfo2Dao2Web();
                     delete();
                     return;
                 }
             }
-            if ("go_back".equals(bean.value("action_cmd")))
-            {
+            if ("go_back".equals(bean.value("action_cmd"))) {
                 bean.setValue("request_cmd", bean.value("request_cmd"));
                 setInputInfo2Dao2Web();
                 forward("ShiftDetail.jsp");
                 return;
             }
         }
-        
-        if ("ShiftDetail_3".equals(bean.value("form_name"))) 
-        {
-            if ("go_back".equals(bean.value("action_cmd")))
-            {
-                if ("return".equals(bean.value("request_cmd"))) 
-                {
+
+        if ("ShiftDetail_3".equals(bean.value("form_name"))) {
+            if ("go_back".equals(bean.value("action_cmd"))) {
+                if ("return".equals(bean.value("request_cmd"))) {
                     formInit();
                     searchList();
                     forward("Shift.jsp");
@@ -216,7 +174,7 @@ public class Shift extends ControllerBase {
                 }
             }
         }
-        
+
         formInit();
         searchList();
         forward("Shift.jsp");
@@ -276,8 +234,7 @@ public class Shift extends ControllerBase {
         HashMap<String, String> errors;
 
         errors = inputCheck();
-        if (errors.size() > 0) 
-        {
+        if (errors.size() > 0) {
             bean.setValue("errors", errors);
             return;
         }
@@ -286,18 +243,14 @@ public class Shift extends ControllerBase {
         dao.setSearchName(bean.value("list_search_full_name"));
 
         DaoPageInfo daoPageInfo = new DaoPageInfo();
-        if (!Validate.isInteger(bean.value("lineCount"))) 
-        {
+        if (!Validate.isInteger(bean.value("lineCount"))) {
             bean.setValue("lineCount", "20");
         }
         daoPageInfo.setLineCount(Integer.parseInt(bean.value("lineCount")));
         SystemUserInfoValue.setUserInfoValue(getLoginUserId(), "Shift", "lineCount", bean.value("lineCount"));
-        if (!Validate.isInteger(bean.value("pageNo"))) 
-        {
+        if (!Validate.isInteger(bean.value("pageNo"))) {
             daoPageInfo.setPageNo(1);
-        } 
-        else 
-        {
+        } else {
             daoPageInfo.setPageNo(Integer.parseInt(bean.value("pageNo")));
         }
         ArrayList<ShiftDAO> listData = ShiftDAO.dbSelectList(dao, sortKey, daoPageInfo);
@@ -366,9 +319,9 @@ public class Shift extends ControllerBase {
      * ページ番号を加算減算する
      *
      * @param $page_no
-     *        現在のページ番号
+     *                 現在のページ番号
      * @param $add
-     *        加算減算する値
+     *                 加算減算する値
      * @return 結果のページを返す
      */
     private String calcPageNo(String pageNo, int add) {
@@ -384,118 +337,96 @@ public class Shift extends ControllerBase {
         ret += add;
         return String.valueOf(ret);
     }
+
     /**
      * 入力チェックを行う。.
      *
      * @return errors HashMapにエラーフィールドをキーとしてエラーメッセージを返す
      * @throws AtareSysException
      */
-    private boolean inputCheck(ShiftDAO ShiftDao) throws AtareSysException
-    {
+    private boolean inputCheck(ShiftDAO ShiftDao) throws AtareSysException {
         WebBean bean = getWebBean();
         HashMap<String, String> errors = bean.getItemErrors();
-       
-        if ("ins".equals(bean.value("request_cmd")) || "update".equals(bean.value("request_cmd"))) 
-        {
-            String nameRegex = "^^[ぁ-んァ-ヶーa-zA-Z"+
-                               "\\u30a0-\\u30ff\\u3040-\\u309f\\u3005-\\u3006\\u30e0-\\u9fcf]*$";
+
+        if ("ins".equals(bean.value("request_cmd")) || "update".equals(bean.value("request_cmd"))) {
+            String nameRegex = "^^[ぁ-んァ-ヶーa-zA-Z" +
+                    "\\u30a0-\\u30ff\\u3040-\\u309f\\u3005-\\u3006\\u30e0-\\u9fcf]*$";
             Pattern pattern = Pattern.compile(nameRegex);
             Matcher matcher = pattern.matcher(bean.value("name"));
-            if (bean.value("name").length() == 0 )
-            {
+            if (bean.value("name").length() == 0) {
                 errors.put("name", "氏名を入力してください。");
-            } 
-            if (bean.value("name").length() > 20 )
-            {
-                errors.put("name", "氏名が長すぎます。");
             }
-            else if (!matcher.matches()) // 数字が含まれているかチェック
-            {  
+            if (bean.value("name").length() > 20) {
+                errors.put("name", "氏名が長すぎます。");
+            } else if (!matcher.matches()) // 数字が含まれているかチェック
+            {
                 errors.put("name", "正しい氏名を入力してください。");
             }
             String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
             Pattern epattern = Pattern.compile(emailRegex);
             Matcher ematcher = epattern.matcher(bean.value("email"));
-            if (bean.value("email").length() == 0)
-            {
+            if (bean.value("email").length() == 0) {
                 errors.put("email", "メールアドレスを入力してください。");
-            }
-            else if (!ematcher.matches()) // メアドに使用できる半角英数記号以外のチェック
-            {  
+            } else if (!ematcher.matches()) // メアドに使用できる半角英数記号以外のチェック
+            {
                 errors.put("email", "正しいメールアドレスを入力してください。");
             }
-            }
-            else if (bean.value("start_time").length() == 0)
-            {
-                errors.put("start_time", "始業時間を入力してください。");
-            }
-        
-            if (bean.value("end_time").length() == 0)
-            {
-                errors.put("start_time", "終業時間を入力してください。");            
-                }
-            String workRegex = "^^[ぁ-んァ-ヶーa-zA-Z0-9"+
-                               "\\u30a0-\\u30ff\\u3040-\\u309f\\u3005-\\u3006\\u30e0-\\u9fcf]*$";
-            Pattern wpattern = Pattern.compile(workRegex);
-            Matcher wmatcher = wpattern.matcher(bean.value("work_place"));
-            if (bean.value("work_place").length() == 0)
-            {
-                errors.put("work_place", "配属先を入力してください");
-            }
-            else if (!wmatcher.matches()) // 全角数字が含まれているかチェック
-            {  
-                errors.put("work_place", "数字を半角にしてください。");
-            }
-            else if ("update".equals(bean.value("request_cmd"))) 
-            {
-                if (ShiftDao.isEmailExists(bean.value("email"), bean.value("main_key")))
-                {
-                    // 重複している場合のエラーメッセージ設定
-                    errors.put("email", "このメールアドレスは既に登録されています。");
-                }
-            }
-                if (ShiftDao.isIdExists(bean.value("id"), bean.value("main_key"))) 
-                {
-                    // 重複している場合のエラーメッセージ設定
-                    errors.put("id", "このＩＤは既に登録されています。");
-                }
-                else if ("ins".equals(bean.value("request_cmd"))) 
-                {
-                    if (ShiftDao.isEmailExists(bean.value("email"), bean.value("main_key")))
-                    {
-                        // 重複している場合のエラーメッセージ設定
-                        errors.put("email", "このメールアドレスは既に登録されています。");
-                    }
-                }
-                    if (ShiftDao.isIdExists(bean.value("id"), bean.value("main_key"))) 
-                    {
-                        // 重複している場合のエラーメッセージ設定
-                        errors.put("id", "このＩＤは既に登録されています。");
-                    }
-                
-            
-        if (errors.size() > 0)
+        } else if (bean.value("start_time").length() == 0) {
+            errors.put("start_time", "始業時間を入力してください。");
+        }
+
+        if (bean.value("end_time").length() == 0) {
+            errors.put("start_time", "終業時間を入力してください。");
+        }
+        String workRegex = "^^[ぁ-んァ-ヶーa-zA-Z0-9" +
+                "\\u30a0-\\u30ff\\u3040-\\u309f\\u3005-\\u3006\\u30e0-\\u9fcf]*$";
+        Pattern wpattern = Pattern.compile(workRegex);
+        Matcher wmatcher = wpattern.matcher(bean.value("work_place"));
+        if (bean.value("work_place").length() == 0) {
+            errors.put("work_place", "配属先を入力してください");
+        } else if (!wmatcher.matches()) // 全角数字が含まれているかチェック
         {
+            errors.put("work_place", "数字を半角にしてください。");
+        } else if ("update".equals(bean.value("request_cmd"))) {
+            if (ShiftDao.isEmailExists(bean.value("email"), bean.value("main_key"))) {
+                // 重複している場合のエラーメッセージ設定
+                errors.put("email", "このメールアドレスは既に登録されています。");
+            }
+        }
+        if (ShiftDao.isIdExists(bean.value("id"), bean.value("main_key"))) {
+            // 重複している場合のエラーメッセージ設定
+            errors.put("id", "このＩＤは既に登録されています。");
+        } else if ("ins".equals(bean.value("request_cmd"))) {
+            if (ShiftDao.isEmailExists(bean.value("email"), bean.value("main_key"))) {
+                // 重複している場合のエラーメッセージ設定
+                errors.put("email", "このメールアドレスは既に登録されています。");
+            }
+        }
+        if (ShiftDao.isIdExists(bean.value("id"), bean.value("main_key"))) {
+            // 重複している場合のエラーメッセージ設定
+            errors.put("id", "このＩＤは既に登録されています。");
+        }
+
+        if (errors.size() > 0) {
             return false;
         }
         return true;
     }
-    private boolean insUserid() throws AtareSysException
-    {
+
+    private boolean insUserid() throws AtareSysException {
         WebBean bean = getWebBean();
         String SHIFTid = GetNumber.getNumberChar("shift_id"); // ユーザーIDを新規作成
         bean.setValue("id", SHIFTid);
-        
+
         return true;
     }
-    
-    public void dbEdit() throws AtareSysException
-    {
+
+    public void dbEdit() throws AtareSysException {
         WebBean bean = getWebBean();
         bean.rtrimAllItem();
         ShiftDAO dao = setWeb2Dao2InputInfo();
-        String Main_key = bean.value("main_key");//主キーの取得
-           
+        String Main_key = bean.value("main_key");// 主キーの取得
+
         try {
             DbBase.dbBeginTran();
             dao.dbUpdate(Main_key);
@@ -505,15 +436,15 @@ public class Shift extends ControllerBase {
             DbBase.dbRollbackTran();
             redirect("Shift.do");
         }
-        
+
     }
 
     /**
      * 削除の場合
+     * 
      * @throws AtareSysException
      */
-    public void delete() throws AtareSysException
-    {
+    public void delete() throws AtareSysException {
         WebBean bean = getWebBean();
         ShiftDAO dao = setWeb2Dao2InputInfo();
         String id = bean.value("main_key");
@@ -521,12 +452,11 @@ public class Shift extends ControllerBase {
         try {
             dao.dbDelete(id);
             forward("ShiftDetail_3.jsp");
-        }
-        catch (Exception e) 
-        {
+        } catch (Exception e) {
             redirect("Shift.do");
         }
     }
+
     /**
      * データベースの内容を表示エリアに編集する。.
      *
@@ -552,7 +482,8 @@ public class Shift extends ControllerBase {
 
     /**
      * 画面の項目をDAOクラスに格納しそれをシリアライズして、input_infoフィールドに格納する
-     *　main_keyを使用したい場合のメソッド
+     * main_keyを使用したい場合のメソッド
+     * 
      * @return なし
      * @throws AtareSysException エラー
      */
@@ -570,10 +501,12 @@ public class Shift extends ControllerBase {
         bean.setValue("input_info", Sup.serialize(dao)); // DAOオブジェクトをシリアライズしてWebBeanに保存
         return dao;
     }
-   /**
-    * すでにDAOクラスに格納されてる項目をデシリアライズしてbeanにセットする
-    * @throws AtareSysException エラー
-    */
+
+    /**
+     * すでにDAOクラスに格納されてる項目をデシリアライズしてbeanにセットする
+     * 
+     * @throws AtareSysException エラー
+     */
     private void setInputInfo2Dao2Web() throws AtareSysException {
         WebBean bean = getWebBean();
         ShiftDAO dao = (ShiftDAO) Sup.deserialize(bean.value("input_info"));
@@ -588,6 +521,7 @@ public class Shift extends ControllerBase {
     /**
      * 画面の項目をDAOクラスに格納しそれをシリアライズして、input_infoフィールドに格納する
      * idの項目を利用したい場合のメソッド
+     * 
      * @return なし
      * @throws AtareSysException エラー
      */
@@ -605,29 +539,29 @@ public class Shift extends ControllerBase {
         bean.setValue("input_info", Sup.serialize(dao)); // DAOオブジェクトをシリアライズしてWebBeanに保存
         return dao;
     }
+
     /**
      * @false エラーが起きShift.jspに飛ぶ
-     * @return　
+     * @return
      */
     private boolean checkDataMatching() throws AtareSysException {
         WebBean bean = getWebBean();
         ShiftDAO dao = new ShiftDAO();
-        if (!dao.dbSelect(bean.value("main_key")))
-        {
+        if (!dao.dbSelect(bean.value("main_key"))) {
             return false;
         }
         return Sup.serializeIsEquals(bean.value("select_info"), dao);
     }
 
-   private boolean signUp() throws AtareSysException {
-       ShiftDAO dao = setWeb2Dao2InputInfoid2();
-       try {
-      // 入力内容をデータベースに保存
-           dao.dbInsert();
-           return true;
-           
-       } catch (Exception e) {
-      return false;
+    private boolean signUp() throws AtareSysException {
+        ShiftDAO dao = setWeb2Dao2InputInfoid2();
+        try {
+            // 入力内容をデータベースに保存
+            dao.dbInsert();
+            return true;
+
+        } catch (Exception e) {
+            return false;
+        }
     }
-  }
 }

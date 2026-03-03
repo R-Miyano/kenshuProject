@@ -876,7 +876,10 @@ public class ReserveDao implements Serializable {
             // ReserveDAOのインスタンスにデータを設定
             reserve.setReserveId(map.get("reserve_id"));
             reserve.setUserInfoId(map.get("user_info_id"));
-            reserve.setUserName(map.get("last_name") + map.get("middle_name") + map.get("first_name"));
+            String lastName = map.get("last_name") == null ? "" : map.get("last_name");
+            String middleName = map.get("middle_name") == null ? "" : map.get("middle_name");
+            String firstName = map.get("first_name") == null ? "" : map.get("first_name");
+            reserve.setUserName(lastName + middleName + firstName);
             reserve.setRoomId(map.get("room_id"));
             reserve.setRoomName(map.get("room_name"));
             reserve.setReservationDate(map.get("reservation_date"));

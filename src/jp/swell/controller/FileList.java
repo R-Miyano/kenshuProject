@@ -57,6 +57,7 @@ public class FileList extends ControllerBase {
     /**
      * jp.swell.cloudbiz.common.ControllerBase のメソッドをオーバライドする。 ここで、コントローラの処理を記述する.
      * ここで、コントローラの処理を記述する.
+     * 
      * @throws Exception エラー
      */
     @Override
@@ -82,7 +83,7 @@ public class FileList extends ControllerBase {
                 formClear();
                 searchList();
             } else if ("return".equals(bean.value("action_cmd"))) {
-                redirect("MenuAdmin.do");
+                redirect("UserMenu.do");
             } else {
                 searchList();
             }
@@ -257,9 +258,9 @@ public class FileList extends ControllerBase {
      * ページ番号を加算減算する
      *
      * @param $page_no
-     *        現在のページ番号
+     *                 現在のページ番号
      * @param $add
-     *        加算減算する値
+     *                 加算減算する値
      * @return 結果のページを返す
      */
     private String calcPageNo(String pageNo, int add) {

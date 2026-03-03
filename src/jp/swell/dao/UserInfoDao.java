@@ -115,11 +115,6 @@ public class UserInfoDao implements Serializable {
     }
 
     /**
-     * stateFlg 状態フラグ
-     */
-    private int stateFlg;
-
-    /**
      * admin 管理者フラグ
      */
     private int admin;
@@ -143,8 +138,13 @@ public class UserInfoDao implements Serializable {
     }
 
     /**
-     * フラグを取得する。
-     * 
+     * stateFlg 状態フラグ
+     */
+    private int stateFlg = 0;
+
+    /**
+     * 状態フラグを取得する。.
+     *
      * @return stateFlg 状態フラグ
      */
     public int getStateFlg() {
@@ -152,12 +152,24 @@ public class UserInfoDao implements Serializable {
     }
 
     /**
-     * フラグをセットする。.
-     * 
+     * 状態フラグを設定する。.
+     *
      * @param stateFlg 状態フラグ
      */
     public void setStateFlg(int stateFlg) {
         this.stateFlg = stateFlg;
+    }
+
+    public void setStateFlg(String stateFlg) {
+        if (stateFlg == null || stateFlg.isEmpty()) {
+            this.stateFlg = 0;
+        } else {
+            try {
+                this.stateFlg = Integer.parseInt(stateFlg);
+            } catch (NumberFormatException e) {
+                this.stateFlg = 0;
+            }
+        }
     }
 
     /**
@@ -884,41 +896,6 @@ public class UserInfoDao implements Serializable {
      * @return true:読み込み成功 false:存在しない
      * @throws AtareSysException フレームワーク共通例外
      */
-    public boolean dbSelect(String pUserInfoId) throws AtareSysException {
-        String sql = "SELECT "
-                + "user_info.user_info_id as user_info___user_info_id, "
-                + "user_info.state_flg as user_info___state_flg, "
-                + "user_info.last_name as user_info___last_name, "
-                + "user_info.middle_name as user_info___middle_name, "
-                + "user_info.first_name as user_info___first_name, "
-                + "user_info.maiden_name as user_info___maiden_name, "
-                + "user_info.last_name_kana as user_info___last_name_kana, "
-                + "user_info.middle_name_kana as user_info___middle_name_kana, "
-                + "user_info.first_name_kana as user_info___first_name_kana, "
-                + "user_info.maiden_name_kana as user_info___maiden_name_kana, "
-                + "user_info.insert_user_id as user_info___insert_user_id, "
-                + "user_info.memail as user_info___memail, "
-                + "user_info.password_user as user_info___password_user, "
-                + "user_info.password as user_info___password, "
-                + "user_info.admin as user_info___admin, "
-                + "user_info.leave_date as user_info___leave_date "
-                + "FROM user_info "
-                + "WHERE user_info_id = " + DbS.chara(pUserInfoId);
-        List<HashMap<String, String>> rs = DbBase.dbSelect(sql);
-        if (0 == rs.size())
-            return false;
-        HashMap<String, String> map = rs.get(0);
-        setUserInfoDaoForJoin(map, this);
-        return true;
-    }
-
-    /**
-     * user_info ユーザ情報テーブルを検索しuser_info ユーザ情報テーブルの１行を取得します。.
-     *
-     * @param pUserInfoId ユーザ情報ID
-     * @return true:読み込み成功 false:存在しない
-     * @throws AtareSysException フレームワーク共通例外
-     */
     public boolean dbSelect(String pUserInfoId, String pas) throws AtareSysException {
         String sql = "select "
                 + " user_info.user_info_id as user_info___user_info_id"
@@ -973,20 +950,47 @@ public class UserInfoDao implements Serializable {
      * @param dao UserInfoDaoこのテーブルのインスタンス
      */
     public void setUserInfoDaoForJoin(HashMap<String, String> map, UserInfoDao dao) throws AtareSysException {
-        dao.setUserInfoId(map.getOrDefault("user_info___user_info_id", ""));
-        dao.setPassword(map.getOrDefault("user_info___password", ""));
-        dao.setLastName(map.getOrDefault("user_info___last_name", ""));
-        dao.setMiddleName(map.getOrDefault("user_info___middle_name", ""));
-        dao.setFirstName(map.getOrDefault("user_info___first_name", ""));
-        dao.setMaidenName(map.getOrDefault("user_info___maiden_name", ""));
-        dao.setLastNameKana(map.getOrDefault("user_info___last_name_kana", ""));
-        dao.setMiddleNameKana(map.getOrDefault("user_info___middle_name_kana", ""));
-        dao.setFirstNameKana(map.getOrDefault("user_info___first_name_kana", ""));
-        dao.setMaidenNameKana(map.getOrDefault("user_info___maiden_name_kana", ""));
-        dao.setInsertUserId(map.getOrDefault("user_info___insert_user_id", ""));
-        dao.setMemail(map.getOrDefault("user_info___memail", ""));
-        dao.setAdmin(Integer.parseInt(map.getOrDefault("user_info___admin", "0")));
-        dao.setLeaveDate(map.getOrDefault("user_info___leave_date", ""));
+        dao.setUserInfoId(getMapValue(map, "user_info___user_info_id", "user_info_id", ""));
+        dao.setPassword(getMapValue(map, "user_info___password", "password", ""));
+        dao.setLastName(getMapValue(map, "user_info___last_name", "last_name", ""));
+        dao.setMiddleName(getMapValue(map, "user_info___middle_name", "middle_name", ""));
+        dao.setFirstName(getMapValue(map, "user_info___first_name", "first_name", ""));
+        dao.setMaidenName(getMapValue(map, "user_info___maiden_name", "maiden_name", ""));
+        dao.setLastNameKana(getMapValue(map, "user_info___last_name_kana", "last_name_kana", ""));
+        dao.setMiddleNameKana(getMapValue(map, "user_info___middle_name_kana", "middle_name_kana", ""));
+        dao.setFirstNameKana(getMapValue(map, "user_info___first_name_kana", "first_name_kana", ""));
+        dao.setMaidenNameKana(getMapValue(map, "user_info___maiden_name_kana", "maiden_name_kana", ""));
+        dao.setMemail(getMapValue(map, "user_info___memail", "memail", ""));
+
+        String adminStr = getMapValue(map, "user_info___admin", "admin", "0");
+        int adminVal = 0;
+        try {
+            adminVal = Integer.parseInt(adminStr);
+        } catch (NumberFormatException e) {
+            adminVal = 0;
+        }
+        dao.setAdmin(adminVal);
+
+        String stateFlgStr = getMapValue(map, "user_info___state_flg", "state_flg", "0");
+        int stateFlgVal = 0;
+        try {
+            stateFlgVal = Integer.parseInt(stateFlgStr);
+        } catch (NumberFormatException e) {
+            stateFlgVal = 0;
+        }
+        dao.setStateFlg(stateFlgVal);
+
+        dao.setLeaveDate(getMapValue(map, "user_info___leave_date", "leave_date", ""));
+    }
+
+    private String getMapValue(HashMap<String, String> map, String key1, String key2, String defaultValue) {
+        if (map.containsKey(key1) && map.get(key1) != null && !map.get(key1).isEmpty()) {
+            return map.get(key1);
+        }
+        if (map.containsKey(key2) && map.get(key2) != null && !map.get(key2).isEmpty()) {
+            return map.get(key2);
+        }
+        return defaultValue;
     }
 
     /**
@@ -1312,104 +1316,68 @@ public class UserInfoDao implements Serializable {
     }
 
     /**
-     * user_info ユーザ情報テーブルの検索条件を設定する。.
+     * user_info ユーザ情報テーブルを検索するためのWHERE句を作成する。
      *
-     * @return String where句の文字列
-     * @throws AtareSysException フレームワーク共通例外
+     * @return String WHERE句の文字列
+     * @throws AtareSysException
      */
-    String dbWhere() throws AtareSysException {
-        StringBuffer where = new StringBuffer(1024);
+    public String dbWhere() throws AtareSysException {
+        StringBuilder where = new StringBuilder();
 
-        // 本日の日付を取得
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-        Date today = new Date();
-        String todayStr = dateFormat.format(today);
-
-        if (getUserInfoId().length() > 0) {
-            where.append(where.length() > 0 ? " AND " : "");
-            where.append("user_info.user_info_id = " + DbS.chara(getUserInfoId()));
-        }
-
-        if (getLastName().length() > 0) {
-            where.append(where.length() > 0 ? " AND " : "");
-            where.append("user_info.last_name = " + DbS.chara(getLastName()));
-        }
-
-        if (getMiddleName().length() > 0) {
-            where.append(where.length() > 0 ? " AND " : "");
-            where.append("user_info.middle_name = " + DbS.chara(getMiddleName()));
-        }
-
-        if (getFirstName().length() > 0) {
-            where.append(where.length() > 0 ? " AND " : "");
-            where.append("user_info.first_name = " + DbS.chara(getFirstName()));
-        }
-
-        if (getMaidenName().length() > 0) {
-            where.append(where.length() > 0 ? " AND " : "");
-            where.append("user_info.maiden_name = " + DbS.chara(getMaidenName()));
-        }
-        if (getSearchFullName().length() > 0) {
-            where.append(where.length() > 0 ? " AND " : "");
-            where.append("CONCAT(" + "IFNULL(user_info.last_name, ''), " + "IFNULL(user_info.first_name, ''), "
-                    + "IFNULL(user_info.middle_name, ''), " + "IFNULL(user_info.maiden_name, '')" + ") LIKE "
-                    + DbS.chara("%" + getSearchFullName() + "%"));
-        }
-
-        if (getLastNameKana().length() > 0) {
-            where.append(where.length() > 0 ? " AND " : "");
-            where.append("user_info.last_name_kana = " + DbS.chara(getLastNameKana()));
-        }
-
-        if (getMiddleNameKana().length() > 0) {
-            where.append(where.length() > 0 ? " AND " : "");
-            where.append("user_info.middle_name_kana = " + DbS.chara(getMiddleNameKana()));
-        }
-
-        if (getFirstNameKana().length() > 0) {
-            where.append(where.length() > 0 ? " AND " : "");
-            where.append("user_info.first_name_kana = " + DbS.chara(getFirstNameKana()));
-        }
-
-        if (getMaidenNameKana().length() > 0) {
-            where.append(where.length() > 0 ? " AND " : "");
-            where.append("user_info.maiden_name_kana = " + DbS.chara(getMaidenNameKana()));
-        }
-        if (getSearchFullNameKana().length() > 0) {
-            where.append(where.length() > 0 ? " AND " : "");
+        // userInfoId が設定されている場合は、そのIDで検索（排他的）
+        if (getUserInfoId() != null && !getUserInfoId().isEmpty()) {
+            where.append("user_info.user_info_id = ").append(DbS.chara(getUserInfoId()));
+        } else if (getSearchName() != null && !getSearchName().isEmpty()) {
+            // 氏名・氏名かな・メールアドレスの部分一致検索
+            String searchStr = DbS.chara("%" + getSearchName() + "%");
+            where.append("(");
+            where.append("user_info.last_name LIKE ").append(searchStr);
+            where.append(" OR user_info.middle_name LIKE ").append(searchStr);
+            where.append(" OR user_info.first_name LIKE ").append(searchStr);
             where.append(
-                    "CONCAT(" + "IFNULL(user_info.last_name_kana, ''), " + "IFNULL(user_info.middle_name_kana, ''), "
-                            + "IFNULL(user_info.first_name_kana, ''), " + "IFNULL(user_info.maiden_name_kana, '')"
-                            + ") LIKE " + DbS.chara("%" + getSearchFullNameKana() + "%"));
-        }
-        if (getSearchName().length() > 0) {
-            where.append(where.length() > 0 ? " AND " : "");
-            where.append("CONCAT(" + "IFNULL(user_info.last_name, ''), " + "IFNULL(user_info.first_name, ''), "
-                    + "IFNULL(user_info.middle_name, ''), " + "IFNULL(user_info.maiden_name, ''), " +
-                    "IFNULL(user_info.last_name_kana, ''), " + "IFNULL(user_info.middle_name_kana, ''), "
-                    + "IFNULL(user_info.first_name_kana, ''), " + "IFNULL(user_info.maiden_name_kana, '')" + ") LIKE "
-                    + DbS.chara("%" + getSearchName() + "%"));
-        }
-        if (userIds != null && userIds.length > 0) {
-            where.append(where.length() > 0 ? " AND " : "");
-            where.append("user_info.user_info_id IN (");
-
-            // userIdsArrayに含まれる各IDをSQLのIN句に追加する
-            for (int i = 0; i < userIds.length; i++) {
-                where.append(DbS.chara(userIds[i]));
-                if (i < userIds.length - 1) {
-                    where.append(", ");
-                }
-            }
+                    " OR CONCAT(IFNULL(user_info.last_name,''), IFNULL(user_info.middle_name,''), IFNULL(user_info.first_name,'')) LIKE ")
+                    .append(searchStr);
+            where.append(" OR user_info.last_name_kana LIKE ").append(searchStr);
+            where.append(" OR user_info.middle_name_kana LIKE ").append(searchStr);
+            where.append(" OR user_info.first_name_kana LIKE ").append(searchStr);
+            where.append(
+                    " OR CONCAT(IFNULL(user_info.last_name_kana,''), IFNULL(user_info.middle_name_kana,''), IFNULL(user_info.first_name_kana,'')) LIKE ")
+                    .append(searchStr);
+            where.append(" OR user_info.memail LIKE ").append(searchStr);
             where.append(")");
+        } else {
+            // 姓名での検索（部分一致）
+            if (getLastName() != null && !getLastName().isEmpty()) {
+                where.append(where.length() > 0 ? " AND " : "");
+                where.append("user_info.last_name LIKE ").append(DbS.chara("%" + getLastName() + "%"));
+            }
+            if (getFirstName() != null && !getFirstName().isEmpty()) {
+                where.append(where.length() > 0 ? " AND " : "");
+                where.append("user_info.first_name LIKE ").append(DbS.chara("%" + getFirstName() + "%"));
+            }
+            // メールアドレスでの検索（完全一致）
+            if (getMemail() != null && !getMemail().isEmpty()) {
+                where.append(where.length() > 0 ? " AND " : "");
+                where.append("user_info.memail = ").append(DbS.chara(getMemail()));
+            }
+            // カナ検索
+            if (getLastNameKana() != null && !getLastNameKana().isEmpty()) {
+                where.append(where.length() > 0 ? " AND " : "");
+                where.append("user_info.last_name_kana LIKE ").append(DbS.chara("%" + getLastNameKana() + "%"));
+            }
+            if (getFirstNameKana() != null && !getFirstNameKana().isEmpty()) {
+                where.append(where.length() > 0 ? " AND " : "");
+                where.append("user_info.first_name_kana LIKE ").append(DbS.chara("%" + getFirstNameKana() + "%"));
+            }
         }
-        where.append(where.length() > 0 ? " AND " : "");
-        where.append("(state_flg != '9' OR (state_flg = '9' AND leave_date >= '" + todayStr + "'))");
 
+        // 共通条件：有効なユーザーのみ
         if (where.length() > 0) {
-            return "where " + where.toString();
+            where.append(" AND ");
         }
-        return "";
+        where.append("user_info.state_flg = 1");
+
+        return "where " + where.toString();
     }
 
     /**
@@ -1440,21 +1408,91 @@ public class UserInfoDao implements Serializable {
     }
 
     /**
+     * user_info ユーザ情報テーブルを１件検索し、自身のインスタンスに内容をセットする。
+     * 
+     * @param pUserInfoId 検索するユーザ情報ID
+     * @return true:成功 false:失敗
+     * @throws AtareSysException エラー
+     */
+    public boolean dbSelect(String pUserInfoId) throws AtareSysException {
+        String sql = "SELECT "
+                + "user_info.user_info_id as user_info___user_info_id, "
+                + "user_info.state_flg as user_info___state_flg, "
+                + "user_info.last_name as user_info___last_name, "
+                + "user_info.middle_name as user_info___middle_name, "
+                + "user_info.first_name as user_info___first_name, "
+                + "user_info.maiden_name as user_info___maiden_name, "
+                + "user_info.last_name_kana as user_info___last_name_kana, "
+                + "user_info.middle_name_kana as user_info___middle_name_kana, "
+                + "user_info.first_name_kana as user_info___first_name_kana, "
+                + "user_info.maiden_name_kana as user_info___maiden_name_kana, "
+                + "user_info.insert_user_id as user_info___insert_user_id, "
+                + "user_info.memail as user_info___memail, "
+                + "user_info.password_user as user_info___password_user, "
+                + "user_info.password as user_info___password, "
+                + "user_info.admin as user_info___admin, "
+                + "user_info.leave_date as user_info___leave_date "
+                + "FROM user_info "
+                + "WHERE user_info_id = " + DbS.chara(pUserInfoId);
+        List<HashMap<String, String>> rs = DbBase.dbSelect(sql);
+        if (0 == rs.size())
+            return false;
+        HashMap<String, String> map = rs.get(0);
+        setUserInfoDaoForJoin(map, this);
+        return true;
+    }
+
+    private HashMap<String, String> resultMap = null;
+
+    public HashMap<String, String> getMap() {
+        return resultMap;
+    }
+
+    /**
+     * user_info ユーザ情報テーブルを１件検索し、UserInfoDaoのインスタンスを返す。
+     * 
+     * @param myclass 検索条件（userInfoId）をセットしたUserInfoDao
+     * @return UserInfoDao 取得したインスタンス
+     * @throws AtareSysException エラー
+     */
+    static public UserInfoDao dbSelect(UserInfoDao myclass) throws AtareSysException {
+        String sql = "select "
+                + "user_info.user_info_id as user_info___user_info_id"
+                + ",user_info.password as user_info___password"
+                + ",user_info.last_name as user_info___last_name"
+                + ",user_info.middle_name as user_info___middle_name"
+                + ",user_info.first_name as user_info___first_name"
+                + ",user_info.maiden_name as user_info___maiden_name"
+                + ",user_info.last_name_kana as user_info___last_name_kana"
+                + ",user_info.middle_name_kana as user_info___middle_name_kana"
+                + ",user_info.first_name_kana as user_info___first_name_kana"
+                + ",user_info.maiden_name_kana as user_info___maiden_name_kana"
+                + ",user_info.memail as user_info___memail"
+                + ",user_info.admin as user_info___admin"
+                + ",user_info.state_flg as user_info___state_flg"
+                + ",user_info.leave_date as user_info___leave_date"
+                + " from user_info "
+                + myclass.dbWhere();
+        List<HashMap<String, String>> rs = DbBase.dbSelect(sql);
+        if (1 != rs.size())
+            return null;
+        HashMap<String, String> map = rs.get(0);
+        UserInfoDao dao = new UserInfoDao();
+        dao.setUserInfoDaoForJoin(map, dao);
+        return dao;
+    }
+
+    /**
      * ログイン処理のチェックを行う。
      *
      * @param pAccount  アカウントまたはメールアドレス
      * @param pPassword パスワード
-     * @return 0::失敗 1:成功 2:管理者ログイン
-     * @throws AtareSysException
-     *                           エラー
+     * @return 成功した場合はtrue、失敗した場合はfalse
+     * @throws AtareSysException エラー
      */
     public boolean login(String pAccount, String pPassword) throws AtareSysException {
-        String sql = "";
-        sql = " SELECT user_info.*"
-                + " FROM user_info "
-                + " WHERE "
-                + " ( user_info_id  = " + DbS.chara(pAccount)
-                + " or memail = " + DbS.chara(pAccount) + " ) ";
+        String sql = "SELECT * FROM user_info WHERE (user_info_id = " + DbS.chara(pAccount)
+                + " OR memail = " + DbS.chara(pAccount) + ")";
         List<HashMap<String, String>> rs = DbBase.dbSelect(sql);
         if (1 != rs.size())
             return false;
@@ -1462,10 +1500,7 @@ public class UserInfoDao implements Serializable {
         setUserInfoDao(map, this);
         String password = Digest.hex(Digest.SHA512, pPassword);
         String dbPassword = map.getOrDefault("password", "");
-        if (!password.equals(dbPassword)) {
-            return false;
-        }
-        return true;
+        return password.equals(dbPassword);
     }
 
     /**
@@ -1483,11 +1518,11 @@ public class UserInfoDao implements Serializable {
         Date today = new Date();
         for (HashMap<String, String> map : rs) {
             UserInfoDao user = new UserInfoDao();
-            String stateFlg = map.get("state_flg");
+            String stateFlgStr = map.get("state_flg");
             String leaveDateStr = map.get("leave_date");
 
             // `state_flg` が "9" かつ `leave_date` が本日より前の場合は表示しない
-            boolean isStateFlgNine = "9".equals(stateFlg);
+            boolean isStateFlgNine = "9".equals(stateFlgStr);
             boolean isLeaveDateBeforeToday = false;
 
             if (leaveDateStr != null && leaveDateStr.length() >= 8) {
@@ -1496,7 +1531,6 @@ public class UserInfoDao implements Serializable {
                     isLeaveDateBeforeToday = !leaveDate.after(today);
                 } catch (ParseException e) {
                     // `leave_date` の解析に失敗した場合は無視する
-                    e.printStackTrace();
                 }
             }
             if (isStateFlgNine && isLeaveDateBeforeToday) {
@@ -1504,8 +1538,7 @@ public class UserInfoDao implements Serializable {
             }
             // ユーザーDAOのインスタンスにデータを設定
             user.setUserInfoId(map.getOrDefault("user_info_id", ""));
-            // stateFlg は上部のフィルタ処理で既に取得済みのため、再宣言せずそのまま使用する
-            user.setStateFlg(Integer.parseInt(stateFlg == null || stateFlg.isEmpty() ? "0" : stateFlg));
+            user.setStateFlg(stateFlgStr); // String版のセッターを使用して安全にセット
             user.setPasswordUser(map.getOrDefault("password_user", ""));
             user.setPassword(map.getOrDefault("password", ""));
             user.setLastName(map.getOrDefault("last_name", ""));
@@ -1522,12 +1555,11 @@ public class UserInfoDao implements Serializable {
             user.setUpdateUserId(map.getOrDefault("update_user_id", ""));
             user.setMemail(map.getOrDefault("memail", ""));
             String adminVal = map.getOrDefault("admin", "0");
-            // admin カラムに数値以外の値（例："admin"）が入っている場合に備えて安全にパースする
             user.setAdmin(adminVal.matches("-?\\d+") ? Integer.parseInt(adminVal) : 0);
             users.add(user);
         }
 
-        return users; // 取得したユーザーリストを返す
+        return users;
     }
 
     /**
@@ -1718,10 +1750,4 @@ public class UserInfoDao implements Serializable {
     public static boolean isTokenExpired(Instant tokenGenerationTime) {
         return Instant.now().isAfter(tokenGenerationTime.plus(EXPIRATION_TIME_MINUTES, ChronoUnit.MINUTES));
     }
-
-    public List<UserInfoDao> selectListWithPaging(int offset, int i) {
-        // TODO 自動生成されたメソッド・スタブ
-        return null;
-    }
-
 }
