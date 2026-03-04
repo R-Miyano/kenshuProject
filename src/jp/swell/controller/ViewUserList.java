@@ -62,6 +62,14 @@ public class ViewUserList extends ControllerBase {
     @Override
     public void doActionProcess() throws AtareSysException {
         WebBean bean = getWebBean();
+
+        // セッションからフラッシュメッセージを取得（更新・削除完了時のメッセージ）
+        String flashMessage = (String) getRequest().getSession().getAttribute("flash_message");
+        if (flashMessage != null) {
+            bean.setMessage(flashMessage);
+            getRequest().getSession().removeAttribute("flash_message");
+        }
+
         if ("ViewUserList".equals(bean.value("form_name"))) {
             bean.trimAllItem();
             if ("search".equals(bean.value("action_cmd"))) {

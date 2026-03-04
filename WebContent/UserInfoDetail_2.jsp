@@ -201,17 +201,27 @@ input.error {
   });
 
   $(document).ready(function() {
-      // 退職予定日の入力フィールドで入力が行われた時に関数を実行
-      $('#leave_date_input').on('change', function() {
-          // name 属性を fieldName 変数に格納し、値を value 変数に格納
-          var fieldName = $(this).attr('name');
-          var value = $(this).val();
+      // 退職予定日の入力フィールドで入力が行われた時にエラーメッセージを即時消去
+      $('#leave_date_input').on('input', function () {
+        var value = $(this).val();
+        if (value && value.trim().length > 0) {
+          $(this).removeClass('error');
+          $('#error_leave_date').text('');
+        }
+      });
 
-          // 現在のフィールドが leave_dateである場合に、以下の処理を実行する条件を指定
-          if (fieldName === 'leave_date') {
-              if (isNumeric(value)) { // 数字であるかどうかを判断
-                  $(this).removeClass('error'); // クラス削除
-                  $('#error_' + fieldName).text(''); // エラーメッセージ非表示
+      // 退職予定日の入力フィールドでフォーカスが外れた時にフォーマットチェック
+      $('#leave_date_input').on('change', function () {
+        var fieldName = $(this).attr('name');
+        var value = $(this).val();
+        if (value) {
+          value = value.replace(/[年月日\-\/]/g, "");
+        }
+
+        if (fieldName === 'leave_date') {
+          if (isNumeric(value) && value.length === 8) {
+            $(this).removeClass('error');
+            $('#error_' + fieldName).text('');
               }
           }
       });

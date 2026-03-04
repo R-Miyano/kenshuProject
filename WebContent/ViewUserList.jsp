@@ -240,6 +240,12 @@ footer {
             <a href="javascript:void(0)" value="" onclick="go_menu('top')">ユーザー情報一覧</a>
         </h1>
     </header>
+    <div class="messages" style="color: red; text-align: center; font-weight: bold; margin-top: 10px;">
+      <%=webBean.dispMessages()%>
+    </div>
+    <div class="errors" style="color: red; text-align: center; font-weight: bold; margin-top: 10px;">
+      <%=webBean.dispErrorMessages()%>
+    </div>
     <form id="main_form" method="post" action="">
     
       <input type="hidden" name="form_name" id="form_name"    value="ViewUserList" /> 
@@ -252,12 +258,6 @@ footer {
       <input type="hidden" name="search_info" id="search_info" value="<%=webBean.txt("search_info")%>" /> 
       <input type="hidden" name="user_info_id" id="user_info_id" value="<%=webBean.txt("user_info_id")%>" />
       <div class="left">
-        <div class="messages">
-          <%=webBean.dispMessages()%>
-        </div>
-        <div class="errors">
-          <%=webBean.dispErrorMessages()%>
-        </div>
         <table class="select_table">
           <tr>
             <td class="search_label center" style="width: 50%">氏名</td>

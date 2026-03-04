@@ -266,7 +266,7 @@
                   <div class="delete-confirm-box">
                     <p style="font-size:18px; color:#555;">以下の社員を退職処理します。よろしいですか？</p>
                     <div class="user-name">
-                      <%= webBean.txt("last_name") %>　<%= webBean.txt("middle_name") %>　<%= webBean.txt("first_name") %>
+                      <%= webBean.txt("last_name") %> <%= webBean.txt("middle_name") %> <%= webBean.txt("first_name") %>
                     </div>
                     <% if (!formatLeaveDate.isEmpty()) { %>
                       <div class="sub-info">退職予定日：<strong>

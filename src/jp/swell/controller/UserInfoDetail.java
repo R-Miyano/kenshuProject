@@ -97,7 +97,7 @@ public class UserInfoDetail extends ControllerBase {
                             forward("ViewUserList.jsp");
                         } else {
                             bean.setValue("request_name", "メール送信");
-                            forward("UserInfoDetail_3.jsp");
+                            forward("UserInfoConfirm.jsp");
                         }
                     } else if ("access".equals(bean.value("request_cmd"))) {
                         if (!setDb2Web()) {
@@ -169,8 +169,7 @@ public class UserInfoDetail extends ControllerBase {
                 }
             }
 
-            else if ("UserInfoDetail_3".equals(bean.value("form_name"))
-                    || "UserInfoConfirm".equals(bean.value("form_name"))) {
+            else if ("UserInfoConfirm".equals(bean.value("form_name"))) {
                 if ("go_next".equals(bean.value("action_cmd"))) {
                     if ("ins".equals(bean.value("request_cmd"))) {
                         try {
@@ -178,6 +177,12 @@ public class UserInfoDetail extends ControllerBase {
                             setInputInfo2Dao2Web();
                             if (signUp() && scheduleInsert()) {
                                 DbBase.dbCommitTran();
+                                // ユーザー名を組み立ててフラッシュメッセージをセッションに保存
+                                String middleName = bean.value("middle_name") != null ? bean.value("middle_name") : "";
+                                String userName = bean.value("last_name")
+                                        + (middleName.isEmpty() ? "" : " " + middleName)
+                                        + " " + bean.value("first_name");
+                                getRequest().getSession().setAttribute("flash_message", userName + "を新規登録しました。");
                                 redirect("ViewUserList.do");
                             } else {
                                 DbBase.dbRollbackTran();
@@ -381,7 +386,9 @@ public class UserInfoDetail extends ControllerBase {
         } else if ("delete".equals(bean.value("request_cmd"))) {
             String leaveDateStr = bean.value("leave_date");
 
-            if (leaveDateStr != null && !leaveDateStr.trim().isEmpty()) {
+            if (leaveDateStr == null || leaveDateStr.trim().isEmpty()) {
+                errors.put("leave_date", "退職予定日が未入力です。");
+            } else if (leaveDateStr != null && !leaveDateStr.trim().isEmpty()) {
                 Date leaveDate = null;
                 String[] formats = { "yyyyMMdd", "yyyy/MM/dd", "yyyy-MM-dd", "yyyy年MM月dd日" };
                 for (String format : formats) {
@@ -561,11 +568,16 @@ public class UserInfoDetail extends ControllerBase {
         UserInfoDao dao = setWeb2Dao2InputInfo();
         String userInfoId = bean.value("user_info_id");// userIdの取得
 
+        // ユーザー名を組み立てる
+        String middleName = dao.getMiddleName() != null ? dao.getMiddleName() : "";
+        String userName = dao.getLastName() + (middleName.isEmpty() ? "" : " " + middleName) + " " + dao.getFirstName();
+
         try {
             DbBase.dbBeginTran();
             dao.dbUpdate(userInfoId);
             DbBase.dbCommitTran();
-            bean.setMessage("ユーザー情報を更新しました。");
+            // redirectではリクエストスコープが失われるため、セッションにメッセージを保存
+            getRequest().getSession().setAttribute("flash_message", userName + "を更新しました");
             redirect("ViewUserList.do");
         } catch (Exception e) {
             DbBase.dbRollbackTran();
@@ -585,15 +597,20 @@ public class UserInfoDetail extends ControllerBase {
         String userInfoId = bean.value("user_info_id");// userIdの取得
         String leaveDate = bean.value("leave_date"); // leave_dateの取得
 
+        String middleName = dao.getMiddleName() != null ? dao.getMiddleName() : "";
+        String userName = dao.getLastName() + (middleName.isEmpty() ? "" : " " + middleName) + " " + dao.getFirstName();
+
         try {
             dao.dbUpdate(userInfoId);
             if (leaveDate == null || leaveDate.trim().isEmpty()) {
                 dao.dbCancelDelete(userInfoId);
-                bean.setMessage("退職予定月の設定を取り消しました。");
+                // redirectではリクエストスコープが失われるため、セッションにメッセージを保存
+                getRequest().getSession().setAttribute("flash_message", userName + "の退職予定月の設定を取り消しました。");
                 redirect("ViewUserList.do");
             } else {
                 dao.dbDelete(userInfoId);
-                bean.setMessage("ユーザー情報を削除しました。");
+                // redirectではリクエストスコープが失われるため、セッションにメッセージを保存
+                getRequest().getSession().setAttribute("flash_message", userName + "を削除しました");
                 redirect("ViewUserList.do");
             }
         } catch (Exception e) {
