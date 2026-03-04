@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF8" ?>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%-- 必要なクラスのインポート --%>
 <%@ page import="jp.swell.dao.RoomDao"%>
 <%@ page import="jp.patasys.common.http.WebUtil"%>
 <%@ page import="jp.patasys.common.http.HtmlParts"%>
 <%@ page import="jp.swell.constant.UserInfoState"%>
 <%@ page import="java.util.ArrayList"%>
+<%-- コントローラから渡されたWebBeanをリクエストスコープから取得 --%>
 <jsp:useBean id="webBean" class="jp.patasys.common.http.WebBean" scope="request" />
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -13,6 +16,8 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 <meta http-equiv="Content-Script-Type" content="text/javascript"/>
 <meta http-equiv="Content-Style-Type" content="text/css"/>
+
+<%-- CSS・ライブラリの読み込み --%>
 <link type="text/css" href="jquery-ui/jquery-ui.css" rel="stylesheet"/>
 <link rel="shortcut icon" href="images/favicon.ico" type="image/vnd.microsoft.icon"/>
 <link rel="icon" href="images/favicon.ico" type="image/vnd.microsoft.icon"/>
@@ -20,8 +25,13 @@
 <script type="text/javascript" src="jquery-ui/jquery-ui.js"></script>
 <script type="text/javascript" src="jquery.watermark/jquery.watermark.js"></script>
 <script type="text/javascript" src="js/common.js"></script>
+
 <title>部屋情報一覧</title>
+
 <style type="text/css">
+/* =========================================
+   基本スタイル・レイアウト
+   ========================================= */
 body {
   font-family: 'Arial', sans-serif;
   background-color: #f9f9f9;
@@ -64,7 +74,9 @@ h1 a:hover {
   text-align: center;
 }
 
-/* ボタンの共通スタイル */
+/* =========================================
+   ボタンのスタイル
+   ========================================= */
 input[type="button"] {
   border-radius: 10px; /* 角を丸くする */
   color: #fff; /* 文字色 */
@@ -78,19 +90,19 @@ input[type="button"] {
   top: 5px;   
 }
 
-/* .new-btnのスタイル */
 .new-btn input {
   background: #fff; /* 背景色を白に */
   color: #000; /* 文字色を黒に */
 }
 
-/* ホバー時のスタイル */
 input[type="button"]:hover {
   background-color: #4baea8; /* ホバー時の背景色 */
 }
 
+/* =========================================
+   テーブル・フォーム要素のスタイル
+   ========================================= */
 table {
-
   width : 100%;
   margin : 0px;
   padding : 0px;
@@ -105,7 +117,7 @@ td {
   border-collapse: collapse;
 }
 
-.search_label { /* 部屋、表示件数 */
+.search_label { /* 検索エリアのラベル */
   background: #00bcd4;
   color: #fff;
   text-align: center;
@@ -135,7 +147,7 @@ td {
   padding : 2px;
 }
 
-.list_label { /* 部屋、表示件数 */
+.list_label { /* 一覧テーブルの見出し */
   background: #00bcd4;
   color: #fff;
   text-align: center;
@@ -157,19 +169,20 @@ td {
   border-radius: 5px;
 }
 
-.list_tr:nth-child(odd) {
+.list_tr:nth-child(odd) { /* ストライプテーブル用の設定（CSS版） */
   background: #efefef;
 }
 
 footer {
-width: 100%;
+  width: 100%;
 }
-
 </style>
+
 <script type="text/javascript">
-<%--検索条件入力でenterキーが押された場合の処理--%>
+<%-- jQuery初期化処理 --%>
 jQuery(function($)
 {
+  <%-- 検索条件入力フィールドでEnterキーが押された場合の処理 --%>
   $(".select_table input").keydown(function (e)
   {
     if(e.which == 13)
@@ -177,6 +190,8 @@ jQuery(function($)
         go_submit('search');
     }
   });
+  
+  <%-- [注意] HTML内に "page_table" クラスが存在しません（"pagenation"のみ）。ページング入力時のEnter処理が動かない可能性があります --%>
   $(".page_table input").keydown(function (e)
   {
     if(e.which == 13)
@@ -185,68 +200,87 @@ jQuery(function($)
     }
   });
 });
-<%--テーブルを一行ごとにいろを変える--%>
-  $(document).ready(function(){
-        $('table.list_table tr:even').addClass('even');
-        $('table.list_table tr:odd').addClass('odd');
-  });
-  function go_submit(action_cmd)
-  {
-    document.getElementById('main_form').action='RoomList.do';
-    document.getElementById('action_cmd').value=action_cmd;
+
+<%-- テーブルの行を交互に色分けする処理（CSSのnth-childでも設定されていますが念のため） --%>
+$(document).ready(function(){
+      $('table.list_table tr:even').addClass('even');
+      $('table.list_table tr:odd').addClass('odd');
+});
+
+<%-- 汎用的なフォーム送信処理 --%>
+function go_submit(action_cmd)
+{
+  document.getElementById('main_form').action='RoomList.do';
+  document.getElementById('action_cmd').value=action_cmd;
+  document.getElementById('main_form').submit();
+}
+
+<%-- ソート（見出しクリック）処理 --%>
+function go_sort_request(key)
+{
+  document.getElementById('sort_key').value=key;
+  document.getElementById('action_cmd').value='sort';
+  document.getElementById('main_form').submit();
+}
+
+<%-- メニューへ戻る処理 --%>
+function go_menu(action_cmd) {
+    document.getElementById('main_form').action = 'UserMenu.do';
+    document.getElementById('action_cmd').value = action_cmd;
     document.getElementById('main_form').submit();
-  }
-  function go_sort_request(key)
-  {
-    document.getElementById('sort_key').value=key;
-    document.getElementById('action_cmd').value='sort';
-    document.getElementById('main_form').submit();
-  }
-  function go_menu(action_cmd) {
-      document.getElementById('main_form').action = 'UserMenu.do';
-      document.getElementById('action_cmd').value = action_cmd;
-      document.getElementById('main_form').submit();
-    }
-  function go_detail_1(action_cmd,request_cmd,main_key,before_name)
-  {
-    document.getElementById('main_form').action='RoomDetail.do';
-    document.getElementById('action_cmd').value=action_cmd;
-    document.getElementById('request_cmd').value=request_cmd;
-    document.getElementById('main_key').value=main_key;
-    document.getElementById('before_name').value=before_name;
-    document.getElementById('main_form').submit();
-  }
-  function go_detail_2(action_cmd,request_cmd,main_key,room_name)
-  {
-    document.getElementById('main_form').action='RoomDetail.do';
-    document.getElementById('action_cmd').value=action_cmd;
-    document.getElementById('request_cmd').value=request_cmd;
-    document.getElementById('main_key').value=main_key;
-    document.getElementById('room_name').value=room_name;
-    document.getElementById('main_form').submit();
-  }
-  function go_detail(action_cmd,request_cmd)
-  {
-    document.getElementById('main_form').action='RoomDetail.do';
-    document.getElementById('action_cmd').value=action_cmd;
-    document.getElementById('request_cmd').value=request_cmd;
-    document.getElementById('main_form').submit();
-  }
+}
+
+<%-- 編集ボタン押下時の詳細画面遷移（before_nameを保持） --%>
+function go_detail_1(action_cmd, request_cmd, main_key, before_name)
+{
+  document.getElementById('main_form').action='RoomDetail.do';
+  document.getElementById('action_cmd').value=action_cmd;
+  document.getElementById('request_cmd').value=request_cmd;
+  document.getElementById('main_key').value=main_key;
+  document.getElementById('before_name').value=before_name;
+  document.getElementById('main_form').submit();
+}
+
+<%-- 削除ボタン押下時の詳細画面遷移（room_nameを保持） --%>
+function go_detail_2(action_cmd, request_cmd, main_key, room_name)
+{
+  document.getElementById('main_form').action='RoomDetail.do';
+  document.getElementById('action_cmd').value=action_cmd;
+  document.getElementById('request_cmd').value=request_cmd;
+  document.getElementById('main_key').value=main_key;
+  document.getElementById('room_name').value=room_name;
+  document.getElementById('main_form').submit();
+}
+
+<%-- 新規登録ボタン押下時の詳細画面遷移 --%>
+function go_detail(action_cmd, request_cmd)
+{
+  document.getElementById('main_form').action='RoomDetail.do';
+  document.getElementById('action_cmd').value=action_cmd;
+  document.getElementById('request_cmd').value=request_cmd;
+  document.getElementById('main_form').submit();
+}
 </script>
 </head>
+
 <body>
-   <div class="container">
+  <div class="container">
+    <%-- ヘッダー右上ボタン群 --%>
     <div class="new-btn">
       <input type="button" value="新規登録" onclick="go_detail('go_next','ins')" />
       <input type="button" value="　戻る　" onclick="go_submit('return')" />
     </div>
-<header>
-    <h1>
-        <a href="javascript:void(0)" value="" onclick="go_menu('top')">部屋情報一覧</a>
-    </h1>
-</header>
-  <form id="main_form" method="post" action="">
+    
+    <header>
+        <h1>
+            <a href="javascript:void(0)" onclick="go_menu('top')">部屋情報一覧</a>
+        </h1>
+    </header>
+
+    <%-- メインフォーム --%>
+    <form id="main_form" method="post" action="">
    
+      <%-- 状態維持・コントローラへのパラメータ渡し用の隠しフィールド（Hidden） --%>
       <input type="hidden" name="form_name" id="form_name" value="RoomList"/>
       <input type="hidden" name="action_cmd" id="action_cmd" value=""/>
       <input type="hidden" name="request_cmd" id="request_cmd" value=""/>
@@ -258,13 +292,17 @@ jQuery(function($)
       <input type="hidden" name="sort_order" id="sort_order" value="<%=webBean.txt("sort_order")%>"/>
       <input type="hidden" name="search_info" id="search_info" value="<%=webBean.txt("search_info")%>"/>
       <input type="hidden" name="room_id" id="room_id" value="<%=webBean.txt("room_id")%>"/>
+      
       <div class="left">
+        <%-- メッセージ・エラー表示エリア --%>
         <div class="messages">
           <%=webBean.dispMessages()%>
         </div>
         <div class="errors">
           <%=webBean.dispErrorMessages()%>
         </div>
+
+        <%-- 検索条件エリア --%>
         <table class="select_table">
           <tr>
             <td class="search_label center" style="width: 50%">部屋名</td>
@@ -285,24 +323,39 @@ jQuery(function($)
             </td>
           </tr>
         </table>
-        <%if(webBean.arrayList("list").size()>0){%>
+
+        <%-- 検索結果がある場合のみ以下のエリアを表示 --%>
+        <%if(webBean.arrayList("list").size() > 0){%>
+        
+        <%-- ページネーションエリア --%>
         <div class="pagenation">
           <input type="text" name="pageNo" id="pageNo" maxlength="3" size='1' value="<%=webBean.txt("pageNo")%>" class="right ime_disabled" />  /
-          <%=webBean.html("maxPageNo")%> ページ〚全
-          <%=webBean.html("recordCount")%>件〛<br/>
-          <%if(!"1".equals(webBean.value("pageNo"))){%> <input type="button" value="<--前の<%=webBean.html("lineCount")%>件" onclick="go_submit('prior')" />
-            <%}else{%>
+          <%=webBean.html("maxPageNo")%> ページ〚全 <%=webBean.html("recordCount")%>件〛<br/>
+          
+          <%-- 前のページへボタン --%>
+          <%if(!"1".equals(webBean.value("pageNo"))){%> 
+            <input type="button" value="<--前の<%=webBean.html("lineCount")%>件" onclick="go_submit('prior')" />
+          <%}else{%>
+            <%-- （必要に応じて非アクティブなボタン等を配置） --%>
           <%}%>
+          
           <input type="button" value="ページ表示" onclick="go_submit('jump')" />
-          <%if(!webBean.value("pageNo").equals(webBean.value("maxPageNo"))){%> <input type="button" value="次の<%=webBean.html("lineCount")%>件-->" onclick="go_submit('next')" />
-            <%}else{%>
+          
+          <%-- 次のページへボタン --%>
+          <%if(!webBean.value("pageNo").equals(webBean.value("maxPageNo"))){%> 
+            <input type="button" value="次の<%=webBean.html("lineCount")%>件-->" onclick="go_submit('next')" />
+          <%}else{%>
           <%}%>
         </div>
+
+        <%-- 検索結果一覧テーブル --%>
         <table class="list_table">
           <tr class="list_title">
-            <td class="list_label" style="width: 70%"><a href="javaScript:go_sort_request('full_name')">部屋名</a></td>
+            <td class="list_label" style="width: 70%"><a href="javaScript:go_sort_request('room_name')">部屋名</a></td>
             <td class="list_label" style="width: 30%"></td>
           </tr>
+          
+          <%-- リストデータのループ展開 --%>
           <%
           for(Object item : webBean.arrayList("list"))
           {
@@ -313,13 +366,15 @@ jQuery(function($)
               <%=WebUtil.htmlEscape(dao.getRoomName())%>
             </td>
             <td class="list_btn">
+              <%-- 編集・削除のアクション発火。XSS対策としてWebUtil.txtEscapeを使用 --%>
               <input type="button" value="編集" onclick="go_detail_1('go_next','update','<%=WebUtil.txtEscape(dao.getRoomId())%>','<%=WebUtil.txtEscape(dao.getRoomName())%>');" />
               <input type="button" value="削除" onclick="go_detail_2('go_next','deletef','<%=WebUtil.txtEscape(dao.getRoomId())%>','<%=WebUtil.txtEscape(dao.getRoomName())%>');" />
             </td>
           </tr>
           <%}%>
         </table>
-        <%}%>
+        <%}%> <%-- リスト表示if文の終了 --%>
+        
       </div>
     </form>
   </div>
