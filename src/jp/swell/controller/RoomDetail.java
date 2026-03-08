@@ -89,14 +89,14 @@ public class RoomDetail extends ControllerBase {
                         bean.setMessage("この内容で登録します。よろしいですか？");
                         bean.setValue("request_name", "登録する");
                         bean.setValue("room_name", roomName);
-                        forward("RoomDetail_2.jsp"); // 確認画面へフォワード
+                        forward("RoomConfirm.jsp"); // 確認画面へフォワード
                     } else if ("update".equals(requestCmd)) // 更新の場合
                     {
                         bean.setMessage("この内容で修正します。よろしいですか？");
                         bean.setValue("request_name", "修正する");
                         bean.setValue("before_name", beforeName);
                         bean.setValue("room_name", roomName);
-                        forward("RoomDetail_2.jsp"); // 確認画面へフォワード
+                        forward("RoomConfirm.jsp"); // 確認画面へフォワード
                     }
                 } else if ("return".equals(actionCmd)) // 一覧へ戻る場合
                 {
@@ -113,7 +113,7 @@ public class RoomDetail extends ControllerBase {
                     if ("ins".equals(requestCmd)) // 新規登録ボタン押下
                     {
                         bean.setValue("request_name", "登録する");
-                        forward("RoomDetail.jsp"); // 詳細（入力）画面へ
+                        forward("RoomConfirm.jsp"); // 詳細（入力）画面へ
                     } else if ("update".equals(requestCmd)) // 修正ボタン押下
                     {
                         // DBから対象データを取得して画面にセット
@@ -123,7 +123,7 @@ public class RoomDetail extends ControllerBase {
                         } else {
                             bean.setValue("request_name", "修正する");
                             bean.setValue("before_name", beforeName);
-                            forward("RoomDetail.jsp"); // 詳細（入力）画面へ
+                            forward("RoomConfirm.jsp"); // 詳細（入力）画面へ
                         }
                     } else if ("deletef".equals(requestCmd)) // 削除ボタン押下
                     {
@@ -135,7 +135,7 @@ public class RoomDetail extends ControllerBase {
                             bean.setMessage("この部屋を削除します。よろしいですか？");
                             bean.setValue("request_name", "削除する");
                             bean.setValue("room_name", roomName);
-                            forward("RoomDetail_2.jsp"); // 確認画面へ直接フォワード
+                            forward("RoomConfirm.jsp"); // 確認画面へ直接フォワード
                         }
                     }
                 }
@@ -145,22 +145,33 @@ public class RoomDetail extends ControllerBase {
              * 3. 「部屋詳細（確認）画面」からのリクエスト処理（実際のDB反映）
              * ==================================================
              */
-            else if ("RoomDetail_2".equals(formName)) {
+            else if ("RoomConfirm".equals(formName) || "RoomDetail_2".equals(formName)) {
                 if ("go_next".equals(actionCmd)) // 確定ボタン押下
                 {
-                    if ("insEnter".equals(requestCmd)) // 登録実行
+                    if ("insConfirm".equals(requestCmd) || "insEnter".equals(requestCmd)) // 登録実行
                     {
                         dbRegistration();
-                    } else if ("updateEnter".equals(requestCmd)) // 更新実行
+                    } else if ("updateConfirm".equals(requestCmd) || "updateEnter".equals(requestCmd)) // 更新実行
                     {
                         dbEdit();
-                    } else if ("deleteEnter".equals(requestCmd)) // 削除実行
+                    } else if ("deleteConfirm".equals(requestCmd) || "deleteEnter".equals(requestCmd)) // 削除実行
                     {
                         dbDeletef();
                     }
+                } else if ("return".equals(actionCmd)) {
+                    if ("insConfirm".equals(requestCmd)) {
+                        bean.setValue("request_name", "登録する");
+                        bean.setValue("request_cmd", "ins");
+                        forward("RoomConfirm.jsp");
+                    } else if ("updateConfirm".equals(requestCmd)) {
+                        bean.setValue("request_name", "修正する");
+                        bean.setValue("request_cmd", "update");
+                        forward("RoomConfirm.jsp");
+                    } else {
+                        redirect("RoomList.do");
+                    }
                 }
-                // 実行後は一覧画面へリダイレクト（二重送信防止のため）
-                redirect("RoomList.do");
+                // 実行後は一覧画面へリダイレクト（二重送信防止のため）の処理を回避
             }
             /*
              * ==================================================
@@ -204,12 +215,12 @@ public class RoomDetail extends ControllerBase {
             } else {
                 bean.setError("登録に失敗しました");
                 bean.setValue("request_name", "登録する"); // 新規登録ページであることを維持
-                forward("RoomDetail.jsp"); // 失敗時は入力画面へ戻る
+                forward("RoomConfirm.jsp"); // 失敗時は入力画面へ戻る
             }
         } else {
             bean.setError("入力内容に誤りがあります");
             bean.setValue("request_name", "登録する"); // 新規登録ページであることを維持
-            forward("RoomDetail.jsp"); // バリデーションエラー時
+            forward("RoomConfirm.jsp"); // バリデーションエラー時
         }
     }
 
@@ -232,11 +243,11 @@ public class RoomDetail extends ControllerBase {
                 DbBase.dbCommitTran();
                 // セッションにメッセージを保存
                 String roomName = dao.getRoomName();
-                getRequest().getSession().setAttribute("flash_message", roomName + "を更新しました");
+                getRequest().getSession().setAttribute("flash_message", roomName + "に更新しました");
                 redirect("RoomList.do");
             } catch (Exception e) {
                 DbBase.dbRollbackTran(); // 失敗時はロールバック
-                forward("RoomDetail.jsp");
+                forward("RoomConfirm.jsp");
             }
         } else {
             // 入力チェックエラー時、元の名前に戻してエラー表示
@@ -245,7 +256,7 @@ public class RoomDetail extends ControllerBase {
             bean.setValue("before_name", beforeName);
 
             bean.setError("入力項目にエラーがあります。下記事項をご確認ください。");
-            forward("RoomDetail.jsp");
+            forward("RoomConfirm.jsp");
         }
     }
 
@@ -271,7 +282,7 @@ public class RoomDetail extends ControllerBase {
             redirect("RoomList.do");
         } catch (Exception e) {
             DbBase.dbRollbackTran(); // 失敗時はロールバック
-            forward("RoomDetail.jsp");
+            forward("RoomConfirm.jsp");
         }
     }
 
@@ -317,7 +328,10 @@ public class RoomDetail extends ControllerBase {
         WebBean bean = getWebBean();
         HashMap<String, String> errors = bean.getItemErrors(); // エラー格納用マップ
         String roomName = bean.value("room_name").trim();
-        String beforeName = bean.value("before_name").trim(); // hidden 等から取得した変更前名称
+        String beforeName = "";
+        if (bean.value("before_name") != null) {
+            beforeName = bean.value("before_name").trim(); // hidden 等から取得した変更前名称
+        }
         String requestCmd = bean.value("request_cmd"); // 現在の処理種別を取得
 
         // 必須入力チェック
@@ -325,7 +339,7 @@ public class RoomDetail extends ControllerBase {
             errors.put("room_name_empty", "部屋名を入力してください。");
         }
         // 更新時のみ同一名称チェック（変更されていない場合の警告）
-        if ("update".equals(requestCmd) || "updateEnter".equals(requestCmd)) {
+        if ("update".equals(requestCmd) || "updateEnter".equals(requestCmd) || "updateConfirm".equals(requestCmd)) {
             if (roomName.equalsIgnoreCase(beforeName)) {
                 errors.put("room_name_duplicate", "部屋名が以前と同じです。別の名前を入力してください。");
             }
