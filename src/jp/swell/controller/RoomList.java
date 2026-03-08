@@ -35,20 +35,18 @@ import jp.swell.dao.RoomDao;
  * @author PATAPATA
  * @version 1.0
  */
-public class RoomList extends ControllerBase
-{
+public class RoomList extends ControllerBase {
     /**
      * コントローラの初期化処理。
      * jp.patasys.alumni.controller.HttpServlet のメソッドをオーバライドする。
      * doAction（リクエスト処理）の前に呼び出され、アクセス要件を設定する。
      */
     @Override
-    public void doInit()
-    {
+    public void doInit() {
         setLoginNeeds(false); // この処理にはログインが必要かどうか
-        setHttpNeeds(false);  // この処理はhttpでなければならないか
+        setHttpNeeds(false); // この処理はhttpでなければならないか
         setHttpsNeeds(false); // この処理はhttps でなければならないか。公開時にはセキュア通信のためtrueにする
-        setUsecache(false);   // この処理はクライアントのキャッシュを認めるか
+        setUsecache(false); // この処理はクライアントのキャッシュを認めるか
     }
 
     /**
@@ -59,15 +57,20 @@ public class RoomList extends ControllerBase
      * @throws AtareSysException システム共通の例外エラー
      */
     @Override
-    public void doActionProcess() throws AtareSysException
-    {
+    public void doActionProcess() throws AtareSysException {
         WebBean bean = getWebBean();
+
+        // セッションからフラッシュメッセージを取得（更新・削除完了時のメッセージ）
+        String flashMessage = (String) getRequest().getSession().getAttribute("flash_message");
+        if (flashMessage != null) {
+            bean.setMessage(flashMessage);
+            getRequest().getSession().removeAttribute("flash_message");
+        }
 
         // =========================================================
         // 1. 自画面（RoomList）からのリクエストの場合（検索・ページ遷移など）
         // =========================================================
-        if ("RoomList".equals(bean.value("form_name")))
-        {
+        if ("RoomList".equals(bean.value("form_name"))) {
             bean.trimAllItem(); // 入力値の前後の空白を除去
 
             if ("search".equals(bean.value("action_cmd"))) // 検索ボタン押下
@@ -75,40 +78,33 @@ public class RoomList extends ControllerBase
                 bean.setValue("pageNo", "1"); // 検索時は1ページ目に戻す
                 searchList();
                 forward("RoomList.jsp");
-            }
-            else if ("next".equals(bean.value("action_cmd"))) // 次のページへ
+            } else if ("next".equals(bean.value("action_cmd"))) // 次のページへ
             {
                 bean.setValue("pageNo", calcPageNo(bean.value("pageNo"), 1));
                 searchList();
                 forward("RoomList.jsp");
-            }
-            else if ("jump".equals(bean.value("action_cmd"))) // 指定ページへジャンプ
+            } else if ("jump".equals(bean.value("action_cmd"))) // 指定ページへジャンプ
             {
                 searchList(); // pageNoは画面から渡されるためそのまま検索
                 forward("RoomList.jsp");
-            }
-            else if ("prior".equals(bean.value("action_cmd"))) // 前のページへ
+            } else if ("prior".equals(bean.value("action_cmd"))) // 前のページへ
             {
                 bean.setValue("pageNo", calcPageNo(bean.value("pageNo"), -1));
                 searchList();
                 forward("RoomList.jsp");
-            }
-            else if ("sort".equals(bean.value("action_cmd"))) // 見出しクリック等でのソート
+            } else if ("sort".equals(bean.value("action_cmd"))) // 見出しクリック等でのソート
             {
                 searchList();
                 forward("RoomList.jsp");
-            }
-            else if ("clear".equals(bean.value("action_cmd"))) // 検索条件クリア
+            } else if ("clear".equals(bean.value("action_cmd"))) // 検索条件クリア
             {
                 formClear();
                 searchList();
                 forward("RoomList.jsp");
-            }
-            else if ("return".equals(bean.value("action_cmd"))) // メニューへ戻る
+            } else if ("return".equals(bean.value("action_cmd"))) // メニューへ戻る
             {
                 redirect("MenuAdmin.do");
-            }
-            else // その他のアクション（再表示など）
+            } else // その他のアクション（再表示など）
             {
                 searchList();
                 forward("RoomList.jsp");
@@ -117,10 +113,9 @@ public class RoomList extends ControllerBase
         // =========================================================
         // 2. 詳細画面等からの戻り処理の場合（以前の検索状態を復元）
         // =========================================================
-        else if ("RoomDetail".equals(bean.value("form_name")) || 
-                 "UserInfoDetail_2".equals(bean.value("form_name")) || 
-                 "UserInfoDetail_3".equals(bean.value("form_name")))
-        {
+        else if ("RoomDetail".equals(bean.value("form_name")) ||
+                "UserInfoDetail_2".equals(bean.value("form_name")) ||
+                "UserInfoDetail_3".equals(bean.value("form_name"))) {
             // シリアライズして保持していた検索条件（search_info）を復元
             setWebBeanFromSerialize(bean.value("search_info"));
             bean = getWebBean();
@@ -130,9 +125,8 @@ public class RoomList extends ControllerBase
         // =========================================================
         // 3. メニュー等からの初回遷移の場合
         // =========================================================
-        else
-        {
-            formInit();   // 初期設定
+        else {
+            formInit(); // 初期設定
             searchList(); // 初回検索（全件表示など）
             forward("RoomList.jsp");
         }
@@ -143,26 +137,25 @@ public class RoomList extends ControllerBase
      *
      * @throws AtareSysException
      */
-    private void formInit() throws AtareSysException
-    {
+    private void formInit() throws AtareSysException {
         WebBean bean = getWebBean();
         bean.setValue("sort_key", "room_id"); // 初回のソート対象項目
-        bean.setValue("sort_order", "asc");   // 初回のソート順（昇順）
+        bean.setValue("sort_order", "asc"); // 初回のソート順（昇順）
         // ユーザー固有の表示件数設定を取得（デフォルト100件）
-        bean.setValue("lineCount", SystemUserInfoValue.getUserInfoValue(getLoginUserId(), "RoomList", "lineCount", "100"));
+        bean.setValue("lineCount",
+                SystemUserInfoValue.getUserInfoValue(getLoginUserId(), "RoomList", "lineCount", "100"));
     }
-   
+
     /**
      * 検索条件フィールドをクリアし、検索状態をリセットする。
      *
      * @throws AtareSysException
      */
-    private void formClear() throws AtareSysException
-    {
+    private void formClear() throws AtareSysException {
         WebBean bean = getWebBean();
         bean.setValue("list_search_room_name", ""); // 部屋名の検索条件をクリア
-        bean.setValue("lineCount", "");             // 表示件数をクリア
-        
+        bean.setValue("lineCount", ""); // 表示件数をクリア
+
         // クリア後の状態をシリアライズして画面に保持（状態維持用）
         String search_info = Sup.serialize(bean);
         bean.setValue("search_info", search_info);
@@ -173,16 +166,13 @@ public class RoomList extends ControllerBase
      *
      * @return errors HashMapにエラーフィールド名をキーとしてエラーメッセージを返す
      */
-    private HashMap<String, String> inputCheck()
-    {
+    private HashMap<String, String> inputCheck() {
         WebBean bean = getWebBean();
         HashMap<String, String> errors = bean.getItemErrors();
-        
+
         // 部屋名検索条件の桁数超過チェック
-        if (bean.value("list_search_room_name").length() > 0)
-        {
-            if (100 < bean.value("list_search_room_name").length())
-            {
+        if (bean.value("list_search_room_name").length() > 0) {
+            if (100 < bean.value("list_search_room_name").length()) {
                 errors.put("list_search_room_name", "部屋名の入力内容が長すぎます。");
             }
         }
@@ -194,15 +184,13 @@ public class RoomList extends ControllerBase
      *
      * @throws AtareSysException
      */
-    private void searchList() throws AtareSysException
-    {
+    private void searchList() throws AtareSysException {
         WebBean bean = getWebBean();
         HashMap<String, String> errors;
 
         // 1. 検索条件のチェック
         errors = inputCheck();
-        if (errors.size() > 0)
-        {
+        if (errors.size() > 0) {
             bean.setValue("errors", errors);
             return; // エラーがあれば検索を行わずに終了
         }
@@ -216,24 +204,20 @@ public class RoomList extends ControllerBase
 
         // 4. ページネーション（DaoPageInfo）の設定
         DaoPageInfo daoPageInfo = new DaoPageInfo();
-        
+
         // 表示件数の設定（不正値の場合はデフォルト20件）
-        if (!Validate.isInteger(bean.value("lineCount")))
-        {
+        if (!Validate.isInteger(bean.value("lineCount"))) {
             bean.setValue("lineCount", "20");
         }
         daoPageInfo.setLineCount(Integer.parseInt(bean.value("lineCount")));
-        
+
         // ユーザーの表示件数設定をDBに保存
         SystemUserInfoValue.setUserInfoValue(getLoginUserId(), "RoomList", "lineCount", bean.value("lineCount"));
-        
+
         // ページ番号の設定
-        if (!Validate.isInteger(bean.value("pageNo")))
-        {
+        if (!Validate.isInteger(bean.value("pageNo"))) {
             daoPageInfo.setPageNo(1);
-        }
-        else
-        {
+        } else {
             daoPageInfo.setPageNo(Integer.parseInt(bean.value("pageNo")));
         }
 
@@ -250,7 +234,7 @@ public class RoomList extends ControllerBase
         bean.getWebValues().remove("search_info");
         String search_info = Sup.serialize(bean);
         bean.setValue("search_info", search_info);
-        
+
         // 検索結果リストをセット
         bean.setValue("list", listData);
     }
@@ -261,63 +245,45 @@ public class RoomList extends ControllerBase
      *
      * @return ソート順を格納したマップ（キー：カラム名、値：asc または desc）
      */
-    private LinkedHashMap<String, String> sortKey()
-    {
+    private LinkedHashMap<String, String> sortKey() {
         WebBean bean = getWebBean();
         String key = "";
         LinkedHashMap<String, String> sort_key = new LinkedHashMap<String, String>(); /* この配列にソートキーとソートオーダーを入れる */
-        
-        // ソートキーが全く設定されていない場合はnullを返す
-        if (bean.value("sort_key").length() == 0 && bean.value("sort_key_old").length() == 0) return null;
 
-        if (bean.value("sort_key_old").length() > 0)
-        {
-            if (bean.value("sort_key").length() > 0)
-            {
-                if (bean.value("sort_key").equals(bean.value("sort_key_old")))
-                {
+        // ソートキーが全く設定されていない場合はnullを返す
+        if (bean.value("sort_key").length() == 0 && bean.value("sort_key_old").length() == 0)
+            return null;
+
+        if (bean.value("sort_key_old").length() > 0) {
+            if (bean.value("sort_key").length() > 0) {
+                if (bean.value("sort_key").equals(bean.value("sort_key_old"))) {
                     // 前回と同じカラムがクリックされた場合（昇順・降順を反転）
                     key = bean.value("sort_key_old");
-                    if ("desc".equals(bean.value("sort_order")))
-                    {
+                    if ("desc".equals(bean.value("sort_order"))) {
                         sort_key.put(key, "asc");
-                    }
-                    else
-                    {
+                    } else {
                         sort_key.put(key, "desc");
                     }
-                }
-                else
-                {
+                } else {
                     // 前回と異なる新しいカラムがクリックされた場合（常に昇順からスタート）
                     key = bean.value("sort_key");
                     sort_key.put(key, "asc");
                 }
-            }
-            else
-            {
+            } else {
                 // リクエストにソートキーがない場合（ページ遷移など）、前回のソート状態を引き継ぐ
                 key = bean.value("sort_key_old");
-                if ("asc".equals(bean.value("sort_order")))
-                {
+                if ("asc".equals(bean.value("sort_order"))) {
                     sort_key.put(key, "asc");
-                }
-                else
-                {
+                } else {
                     sort_key.put(key, "desc");
                 }
             }
-        }
-        else
-        {
+        } else {
             // 初期状態からのソート
             key = bean.value("sort_key");
-            if ("asc".equals(bean.value("sort_order")))
-            {
+            if ("asc".equals(bean.value("sort_order"))) {
                 sort_key.put(key, "asc");
-            }
-            else
-            {
+            } else {
                 sort_key.put(key, "desc");
             }
         }
@@ -326,7 +292,7 @@ public class RoomList extends ControllerBase
         bean.setValue("sort_key", "");
         bean.setValue("sort_key_old", key);
         bean.setValue("sort_order", sort_key.get(key));
-        
+
         return sort_key;
     }
 
@@ -337,18 +303,16 @@ public class RoomList extends ControllerBase
      * @param add    加算・減算する値（1 または -1）
      * @return 計算結果のページ番号文字列
      */
-    private String calcPageNo(String pageNo, int add)
-    {
+    private String calcPageNo(String pageNo, int add) {
         int ret;
         // ページ番号が不正、または空の場合は1ページ目として扱う
-        if (null == pageNo || "".equals(pageNo) || !Validate.isInteger(pageNo))
-        {
+        if (null == pageNo || "".equals(pageNo) || !Validate.isInteger(pageNo)) {
             pageNo = "1";
         }
-        
+
         ret = Integer.parseInt(pageNo);
         ret += add; // 加算処理
-        
+
         return String.valueOf(ret);
     }
 }

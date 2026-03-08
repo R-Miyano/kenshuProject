@@ -277,6 +277,12 @@ function go_detail(action_cmd, request_cmd)
         </h1>
     </header>
 
+	<%-- 部屋情報の更新・削除完了メッセージ表示エリア（赤太字・下1行空け） --%>
+    <div
+      style="color: red; font-weight: bold; text-align: center; margin-top: 10px; margin-bottom: 20px;">
+      <%= webBean.dispMessages() %>
+    </div>
+    
     <%-- メインフォーム --%>
     <form id="main_form" method="post" action="">
    
@@ -294,14 +300,6 @@ function go_detail(action_cmd, request_cmd)
       <input type="hidden" name="room_id" id="room_id" value="<%=webBean.txt("room_id")%>"/>
       
       <div class="left">
-        <%-- メッセージ・エラー表示エリア --%>
-        <div class="messages">
-          <%=webBean.dispMessages()%>
-        </div>
-        <div class="errors">
-          <%=webBean.dispErrorMessages()%>
-        </div>
-
         <%-- 検索条件エリア --%>
         <table class="select_table">
           <tr>
