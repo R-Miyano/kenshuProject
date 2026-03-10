@@ -127,6 +127,29 @@ public class ReserveDao implements Serializable {
     private String fileId = "";
 
     /**
+     * 一覧画面での全体検索キーワード
+     */
+    private String listSearch = "";
+
+    /**
+     * 全体検索キーワードを取得する。
+     *
+     * @return listSearch 全体検索キーワード
+     */
+    public String getListSearch() {
+        return listSearch;
+    }
+
+    /**
+     * 全体検索キーワードをセットする。
+     *
+     * @param listSearch 全体検索キーワード
+     */
+    public void setListSearch(String listSearch) {
+        this.listSearch = listSearch;
+    }
+
+    /**
      * 予約情報IDを取得する。
      * 
      * @return reserveId ユーザ情報ID
@@ -675,20 +698,30 @@ public class ReserveDao implements Serializable {
      * @param dao ReserveDaoこのテーブルのインスタンス
      */
     public void setReserveDaoForJoin(HashMap<String, String> map, ReserveDao dao) throws AtareSysException {
-        dao.setReserveId(map.getOrDefault("reserve___reserve_id", ""));
-        dao.setUserInfoId(map.getOrDefault("reserve___user_info_id", ""));
-        dao.setRoomId(map.getOrDefault("reserve___room_id", ""));
-        dao.setReservationDate(map.getOrDefault("reserve___reservation_date", ""));
-        dao.setCheckinTime(map.getOrDefault("reserve___checkin_time", ""));
-        dao.setCheckoutTime(map.getOrDefault("reserve___checkout_time", ""));
-        dao.setInputText(map.getOrDefault("reserve___input_text", ""));
-        dao.setColor(map.getOrDefault("reserve___rgb_color", ""));
-        dao.setInputRemark(map.getOrDefault("reserve___input_remark", ""));
-        dao.setInsertDate(map.getOrDefault("reserve___insert_date", ""));
-        dao.setInsertUserId(map.getOrDefault("reserve___insert_user_id", ""));
-        dao.setUpdateDate(map.getOrDefault("reserve___update_date", ""));
-        dao.setUpdateUserId(map.getOrDefault("reserve___update_user_id", ""));
-        dao.setUserReserveId(map.getOrDefault("reserve___user_reserve_id", ""));
+        dao.setReserveId(getMapValue(map, "reserve___reserve_id", "reserve_id", ""));
+        dao.setUserInfoId(getMapValue(map, "reserve___user_info_id", "user_info_id", ""));
+        dao.setRoomId(getMapValue(map, "reserve___room_id", "room_id", ""));
+        dao.setReservationDate(getMapValue(map, "reserve___reservation_date", "reservation_date", ""));
+        dao.setCheckinTime(getMapValue(map, "reserve___checkin_time", "checkin_time", ""));
+        dao.setCheckoutTime(getMapValue(map, "reserve___checkout_time", "checkout_time", ""));
+        dao.setInputText(getMapValue(map, "reserve___input_text", "input_text", ""));
+        dao.setColor(getMapValue(map, "reserve___rgb_color", "rgb_color", ""));
+        dao.setInputRemark(getMapValue(map, "reserve___input_remark", "input_remark", ""));
+        dao.setInsertDate(getMapValue(map, "reserve___insert_date", "insert_date", ""));
+        dao.setInsertUserId(getMapValue(map, "reserve___insert_user_id", "insert_user_id", ""));
+        dao.setUpdateDate(getMapValue(map, "reserve___update_date", "update_date", ""));
+        dao.setUpdateUserId(getMapValue(map, "reserve___update_user_id", "update_user_id", ""));
+        dao.setUserReserveId(getMapValue(map, "reserve___user_reserve_id", "user_reserve_id", ""));
+    }
+
+    private String getMapValue(HashMap<String, String> map, String key1, String key2, String defaultValue) {
+        if (map.containsKey(key1) && map.get(key1) != null && !map.get(key1).isEmpty()) {
+            return map.get(key1);
+        }
+        if (map.containsKey(key2) && map.get(key2) != null && !map.get(key2).isEmpty()) {
+            return map.get(key2);
+        }
+        return defaultValue;
     }
 
     /**
@@ -771,7 +804,7 @@ public class ReserveDao implements Serializable {
      */
     public boolean dbDeleteReserve(String pReserveId) throws AtareSysException {
         String sql = "delete from reserve "
-                + " where reserve_id = " + DbS.chara(reserveId);
+                + " where reserve_id = " + DbS.chara(pReserveId);
         int ret = DbBase.dbExec(sql);
         if (ret != 1)
             throw new AtareSysException("dbDelete number or record exception.");
@@ -1017,15 +1050,17 @@ public class ReserveDao implements Serializable {
         // ユーザーが退会済み（state_flg = 9）じゃないことを追加
         where.append(" and user_info.state_flg != '9'");
 
-        if (getReservationDate() != null && !getReservationDate().isEmpty()) {
-            where.append(" AND reserve.reservation_date LIKE ").append(DbS.chara("%" + getReservationDate() + "%"));
-        }
-
-        if (getUserName() != null && !getUserName().isEmpty()) {
-            String keyword = DbS.chara("%" + getUserName() + "%");
-            where.append(" AND (user_info.last_name LIKE ").append(keyword)
+        if (getListSearch() != null && !getListSearch().isEmpty()) {
+            String keyword = DbS.chara("%" + getListSearch() + "%");
+            where.append(" AND (")
+                    .append("reserve.reservation_date LIKE ").append(keyword)
+                    .append(" OR room.room_name LIKE ").append(keyword)
+                    .append(" OR user_info.last_name LIKE ").append(keyword)
                     .append(" OR user_info.middle_name LIKE ").append(keyword)
-                    .append(" OR user_info.first_name LIKE ").append(keyword).append(")");
+                    .append(" OR user_info.first_name LIKE ").append(keyword)
+                    .append(" OR reserve.checkin_time LIKE ").append(keyword)
+                    .append(" OR reserve.checkout_time LIKE ").append(keyword)
+                    .append(")");
         }
 
         if (getRoomName() != null && !getRoomName().isEmpty()) {

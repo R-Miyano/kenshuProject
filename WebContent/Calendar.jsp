@@ -128,63 +128,46 @@
                                                                                 justify-content: center;
                                                                             }
 
-                                                                            #room1,
-                                                                            .room1 {
-                                                                                color: black;
-                                                                                background-color: orangered;
-                                                                                margin: 5px;
+                                                                            <% if (webBean.arrayList("roomList") !=null) {
+                                                                                int colorIdx=0;
+
+                                                                                String[] colors= {
+                                                                                    "orangered",
+                                                                                    "forestgreen",
+                                                                                    "yellow",
+                                                                                    "royalblue",
+                                                                                    "chocolate",
+                                                                                    "springgreen",
+                                                                                    "mediumspringgreen",
+                                                                                    "lawngreen",
+                                                                                    "cyan",
+                                                                                    "gold",
+                                                                                    "pink",
+                                                                                    "silver",
+                                                                                    "plum",
+                                                                                    "salmon",
+                                                                                    "khaki"
+                                                                                }
+
+                                                                                ;
+
+                                                                                for (Object item : webBean.arrayList("roomList")) {
+                                                                                    RoomDao room=(RoomDao) item;
+                                                                                    String color=colors[colorIdx % colors.length];
+                                                                                    colorIdx++;
+
+                                                                                    %>#room<%=WebUtil.htmlEscape(room.getRoomId())%>,
+                                                                                    .room<%=WebUtil.htmlEscape(room.getRoomId())%> {
+                                                                                        color: black;
+                                                                                        background-color: <%=color%>;
+                                                                                        margin: 5px;
+                                                                                    }
+
+                                                                                    <%
+                                                                                }
                                                                             }
 
-                                                                            #room2,
-                                                                            .room2 {
-                                                                                color: black;
-                                                                                background-color: forestgreen;
-                                                                                margin: 5px;
-                                                                            }
-
-                                                                            #room3,
-                                                                            .room3 {
-                                                                                color: black;
-                                                                                background-color: yellow;
-                                                                                margin: 5px;
-                                                                            }
-
-                                                                            #room4,
-                                                                            .room4 {
-                                                                                color: black;
-                                                                                background-color: royalblue;
-                                                                                margin: 5px;
-                                                                            }
-
-                                                                            #room5,
-                                                                            .room5 {
-                                                                                color: black;
-                                                                                background-color: chocolate;
-                                                                                margin: 5px;
-                                                                            }
-
-                                                                            #roomEGBR00001,
-                                                                            .roomEGBR00001 {
-                                                                                color: black;
-                                                                                background-color: springgreen;
-                                                                                margin: 5px;
-                                                                            }
-
-                                                                            #roomEGBR00002,
-                                                                            .roomEGBR00002 {
-                                                                                color: black;
-                                                                                background-color: mediumspringgreen;
-                                                                                margin: 5px;
-                                                                            }
-
-                                                                            #roomEGBU00005,
-                                                                            .roomEGBU00005 {
-                                                                                color: black;
-                                                                                background-color: lawngreen;
-                                                                                margin: 5px;
-                                                                            }
-
-                                                                            table {
+                                                                            %>table {
                                                                                 width: 100%;
                                                                                 border-collapse: collapse;
                                                                                 margin-top: 20px;
@@ -393,14 +376,14 @@
                                                                                 document.getElementById('current_month').innerHTML = currentYear + '年' + (currentMonth + 1) + '月'; //年月の表示
                                                                                 document.getElementById('calendar').innerHTML = createCalendar(); //カレンダーの表示
                                                                                 insertReserve();
-                                                                                reserveDisplay('room1check', 'room1');
-                                                                                reserveDisplay('room2check', 'room2');
-                                                                                reserveDisplay('room3check', 'room3');
-                                                                                reserveDisplay('room4check', 'room4');
-                                                                                reserveDisplay('room5check', 'room5');
-                                                                                reserveDisplay('roomEGBR00001check', 'roomEGBR00001');
-                                                                                reserveDisplay('roomEGBR00002check', 'roomEGBR00002');
-                                                                                reserveDisplay('roomEGBU00005check', 'roomEGBU00005');
+<%
+                                                                                if (webBean.arrayList("roomList") != null) {
+                                                                                    for (Object item : webBean.arrayList("roomList")) {
+                                                                                        RoomDao room = (RoomDao) item;
+                                                                                %>
+                                                                                            reserveDisplay('room<%=WebUtil.htmlEscape(room.getRoomId())%>check', 'room<%=WebUtil.htmlEscape(room.getRoomId())%>');
+                                                                                <%  }
+                                                                                } %>
                                                                             }
 
                                                                             //月を動かす関数
@@ -426,14 +409,14 @@
                                                                                 showCalendar();
                                                                                 document.querySelector('#prev').addEventListener('click', moveCalendar);
                                                                                 document.querySelector('#next').addEventListener('click', moveCalendar);
-                                                                                changeReserveDisplay('room1check', 'room1');
-                                                                                changeReserveDisplay('room2check', 'room2');
-                                                                                changeReserveDisplay('room3check', 'room3');
-                                                                                changeReserveDisplay('room4check', 'room4');
-                                                                                changeReserveDisplay('room5check', 'room5');
-                                                                                changeReserveDisplay('roomEGBR00001check', 'roomEGBR00001');
-                                                                                changeReserveDisplay('roomEGBR00002check', 'roomEGBR00002');
-                                                                                changeReserveDisplay('roomEGBU00005check', 'roomEGBU00005');
+<%
+                                                                                if (webBean.arrayList("roomList") != null) {
+                                                                                    for (Object item : webBean.arrayList("roomList")) {
+                                                                                        RoomDao room = (RoomDao) item;
+                                                                                %>
+                                                                                    changeReserveDisplay('room<%=WebUtil.htmlEscape(room.getRoomId())%>check', 'room<%=WebUtil.htmlEscape(room.getRoomId())%>');
+                                                                                <%  }
+                                                                                } %>
                                                                             });
 
                                                                         </script>
@@ -500,78 +483,25 @@
                                                                                     </div>
 
                                                                                     <div id="roomColor">
-                                                                                        <div id="room1">
-                                                                                            <label><input
-                                                                                                    type="checkbox"
-                                                                                                    id="room1check"
-                                                                                                    name="room1check"
-                                                                                                    value=""
-                                                                                                    class="os-checkbox"
-                                                                                                    checked />MTGルーム</label>
-                                                                                        </div>
-                                                                                        <div id="room2">
-                                                                                            <label><input
-                                                                                                    type="checkbox"
-                                                                                                    id="room2check"
-                                                                                                    name="room2check"
-                                                                                                    value=""
-                                                                                                    class="os-checkbox"
-                                                                                                    checked />応接室</label>
-                                                                                        </div>
-                                                                                        <div id="room3">
-                                                                                            <label><input
-                                                                                                    type="checkbox"
-                                                                                                    id="room3check"
-                                                                                                    name="room3check"
-                                                                                                    value=""
-                                                                                                    class="os-checkbox"
-                                                                                                    checked />個室1</label>
-                                                                                        </div>
-                                                                                        <div id="room4">
-                                                                                            <label><input
-                                                                                                    type="checkbox"
-                                                                                                    id="room4check"
-                                                                                                    name="room4check"
-                                                                                                    value=""
-                                                                                                    class="os-checkbox"
-                                                                                                    checked />個室2</label>
-                                                                                        </div>
-                                                                                        <div id="room5">
-                                                                                            <label><input
-                                                                                                    type="checkbox"
-                                                                                                    id="room5check"
-                                                                                                    name="room5check"
-                                                                                                    value=""
-                                                                                                    class="os-checkbox"
-                                                                                                    checked />大広間</label>
-                                                                                        </div>
-                                                                                        <div id="roomEGBR00001">
-                                                                                            <label><input
-                                                                                                    type="checkbox"
-                                                                                                    id="roomEGBR00001check"
-                                                                                                    name="roomEGBR00001check"
-                                                                                                    value=""
-                                                                                                    class="os-checkbox"
-                                                                                                    checked />testroom</label>
-                                                                                        </div>
-                                                                                        <div id="roomEGBR00002">
-                                                                                            <label><input
-                                                                                                    type="checkbox"
-                                                                                                    id="roomEGBR00002check"
-                                                                                                    name="roomEGBR00002check"
-                                                                                                    value=""
-                                                                                                    class="os-checkbox"
-                                                                                                    checked />testroom23</label>
-                                                                                        </div>
-                                                                                        <div id="roomEGBU00005">
-                                                                                            <label><input
-                                                                                                    type="checkbox"
-                                                                                                    id="roomEGBU00005check"
-                                                                                                    name="roomEGBU00005check"
-                                                                                                    value=""
-                                                                                                    class="os-checkbox"
-                                                                                                    checked />testroom22</label>
-                                                                                        </div>
+                                                                                        <% if
+                                                                                            (webBean.arrayList("roomList")
+                                                                                            !=null) { for (Object item :
+                                                                                            webBean.arrayList("roomList"))
+                                                                                            { RoomDao room=(RoomDao)
+                                                                                            item; %>
+                                                                                            <div
+                                                                                                id="room<%=WebUtil.htmlEscape(room.getRoomId())%>">
+                                                                                                <label><input
+                                                                                                        type="checkbox"
+                                                                                                        id="room<%=WebUtil.htmlEscape(room.getRoomId())%>check"
+                                                                                                        name="room<%=WebUtil.htmlEscape(room.getRoomId())%>check"
+                                                                                                        value=""
+                                                                                                        class="os-checkbox"
+                                                                                                        checked />
+                                                                                                    <%=WebUtil.htmlEscape(room.getRoomName())%>
+                                                                                                </label>
+                                                                                            </div>
+                                                                                            <% } } %>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div id="calendar" class="calendar">

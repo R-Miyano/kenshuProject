@@ -419,9 +419,9 @@
                                         </tr>
                                       </thead>
                                       <tbody>
-                                        <% /* データベースの予約情報が空でないかの確認 */ if (webBean.arrayList("reserve") !=null &&
-                                          !webBean.arrayList("reserve").isEmpty()) { /* 予約情報を取るためのループ処理 */ for (Object
-                                          reserveItem : webBean.arrayList("reserve")) { ReserveDao reserve=(ReserveDao)
+                                        <% /* データベースの予約情報が空でないかの確認 */ if (webBean.arrayList("list") !=null &&
+                                          !webBean.arrayList("list").isEmpty()) { /* 予約情報を取るためのループ処理 */ for (Object
+                                          reserveItem : webBean.arrayList("list")) { ReserveDao reserve=(ReserveDao)
                                           reserveItem; RoomDao room=null; UserInfoDao user=null; /* データベースのroomが空でないかの確認
                                           */ if (webBean.arrayList("rooms") !=null &&
                                           !webBean.arrayList("rooms").isEmpty()) { /* 部屋情報を取るためのループ処理 */ for (Object
@@ -433,13 +433,20 @@
                                           userItem; if (testUser.getUserInfoId().equals(reserve.getUserInfoId())) {
                                           user=testUser; break; } } } String
                                           reserveDate=WebUtil.htmlEscape(reserve.getReservationDate()); String
-                                          formatDate=reserveDate.substring(0, 4) + "/" + reserveDate.substring(4, 6)
-                                          + "/" + reserveDate.substring(6, 8); String
-                                          checkinTime=WebUtil.htmlEscape(reserve.getCheckinTime()); String
-                                          checkoutTime=WebUtil.htmlEscape(reserve.getCheckoutTime()); String
-                                          formatCheckinTime=checkinTime.substring(0, 2) + ":" + checkinTime.substring(2,
-                                          4); String formatCheckoutTime=checkoutTime.substring(0, 2) + ":" +
-                                          checkoutTime.substring(2, 4); %>
+                                          formatDate=(reserveDate !=null && reserveDate.length()>= 8) ?
+                                          reserveDate.substring(0, 4) + "/" + reserveDate.substring(4, 6) + "/" +
+                                          reserveDate.substring(6, 8)
+                                          : reserveDate;
+                                          String checkinTime = WebUtil.htmlEscape(reserve.getCheckinTime());
+                                          String checkoutTime = WebUtil.htmlEscape(reserve.getCheckoutTime());
+                                          String formatCheckinTime = (checkinTime != null && checkinTime.length() >= 4)
+                                          ?
+                                          checkinTime.substring(0, 2) + ":" + checkinTime.substring(2, 4)
+                                          : checkinTime;
+                                          String formatCheckoutTime = (checkoutTime != null && checkoutTime.length() >=
+                                          4) ?
+                                          checkoutTime.substring(0, 2) + ":" + checkoutTime.substring(2, 4)
+                                          : checkoutTime; %>
                                           <tr>
                                             <td>
                                               <%=WebUtil.htmlEscape(formatDate)%>

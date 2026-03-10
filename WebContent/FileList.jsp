@@ -300,7 +300,7 @@
 											<header>
 												<h1>
 													<a href="javascript:void(0)" value=""
-														onclick="go_menu('top')">ファイル一覧</a>
+														onclick="go_menu('top')">ファイル情報一覧</a>
 												</h1>
 											</header>
 

@@ -6,9 +6,9 @@ import jp.patasys.common.AtareSysException;
 import jp.patasys.common.http.WebBean;
 import jp.swell.common.ControllerBase;
 import jp.swell.dao.ReserveDao;
+import jp.swell.dao.RoomDao;
 
-public class Calendar extends ControllerBase
-{
+public class Calendar extends ControllerBase {
     /**
      * jp.patasys.alumni.controller.HttpServlet のメソッドをオーバライドする。
      * オーバライドしない場合は、デフォルトが設定される。.
@@ -21,33 +21,33 @@ public class Calendar extends ControllerBase
     @Override
     public void doInit() {
         setLoginNeeds(true); // ログインが必要
-        setHttpNeeds(false); 
-        setHttpsNeeds(false); 
+        setHttpNeeds(false);
+        setHttpsNeeds(false);
         setUsecache(false);
 
         // ログインユーザーIDを取得してログ出力
         String loggedInUserId = getLoginUserId();
         System.out.println("ログイン中のユーザー: " + loggedInUserId);
     }
-    
+
     @Override
-    public void doActionProcess() throws AtareSysException
-    {
+    public void doActionProcess() throws AtareSysException {
         WebBean bean = getWebBean();
 
-        if ("Calendar".equals(bean.value("form_name")))
-        {
-            if ("return".equals(bean.value("action_cmd"))) 
-            {
+        if ("Calendar".equals(bean.value("form_name"))) {
+            if ("return".equals(bean.value("action_cmd"))) {
                 forward("MenuAdmin.do");
                 return;
             }
-        }
-        else
-        {
+        } else {
             ReserveDao reserveDao = new ReserveDao();
             ArrayList<ReserveDao> reserves = reserveDao.getCalendarReserves();
             bean.setValue("reserves", reserves);
+
+            RoomDao roomDao = new RoomDao();
+            ArrayList<RoomDao> roomList = roomDao.getAllRooms();
+            bean.setValue("roomList", roomList);
+
             forward("Calendar.jsp");
         }
     }

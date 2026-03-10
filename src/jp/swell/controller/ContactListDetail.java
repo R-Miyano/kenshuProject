@@ -188,6 +188,8 @@ public class ContactListDetail extends ControllerBase {
                         setInputInfo2Dao2Web();
                         setWeb2Dao2InputInfo();
                         forward("ContactListDetail_1.jsp");
+                    } else if ("check".equals(req)) {
+                        redirect("ContactList.do");
                     } else if ("send".equals(req)) {
                         redirect("ContactList.do");
                     }

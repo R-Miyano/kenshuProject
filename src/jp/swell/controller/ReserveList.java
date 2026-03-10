@@ -151,7 +151,6 @@ public class ReserveList extends ControllerBase {
     private void searchReserve() throws AtareSysException {
         WebBean bean = getWebBean();
         HashMap<String, String> errors;
-        bean.setValue("list_search", "");
 
         errors = inputCheck();
         if (errors.size() > 0) {
@@ -161,11 +160,9 @@ public class ReserveList extends ControllerBase {
         // 予約情報の検索
         LinkedHashMap<String, String> sortKey = sortKey();
         ReserveDao dao = new ReserveDao();
-        dao.setReservationDate(bean.value("list_search"));
-        dao.setRoomName(bean.value("list_search"));
-        dao.setUserName(bean.value("list_search"));
-        dao.setCheckinTime(bean.value("list_search"));
-        dao.setCheckoutTime(bean.value("list_search"));
+
+        // 全体検索用キーワードをセット
+        dao.setListSearch(bean.value("list_search"));
 
         // ユーザー情報の取得とセット
         UserInfoDao userInfoDao = new UserInfoDao();
