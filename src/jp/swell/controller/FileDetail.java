@@ -30,6 +30,7 @@ import jp.patasys.common.util.Sup;
 import jp.patasys.common.util.Validate;
 import jp.swell.common.ControllerBase;
 import jp.swell.dao.FileDao;
+import jp.swell.dao.UserFileDao;
 import jp.swell.dao.UserInfoDao;
 import jp.swell.user.UserLoginInfo;
 
@@ -52,11 +53,11 @@ public class FileDetail extends ControllerBase {
     @Override
     public void doActionProcess() throws AtareSysException {
         WebBean bean = getWebBean();
-        UserLoginInfo login = (UserLoginInfo)getLoginInfo();
+        UserLoginInfo login = (UserLoginInfo) getLoginInfo();
         // 追加：JSP 上で使うためのログインユーザー名・ID
         bean.setValue("loginUserName", login.getLastName() + " " + login.getFirstName());
         bean.setValue("loginUserId", login.getUserInfoId());
-        
+
         // デバッグログ：どのフォーム／コマンドで呼ばれたか
         String form = bean.value("form_name");
         String actionCmd = bean.value("action_cmd");
@@ -72,7 +73,10 @@ public class FileDetail extends ControllerBase {
             // ① upload ボタン押下 → 確認画面へ
             if ("upload".equals(actionCmd)) {
                 try {
-                    setWeb2Dao2InputInfo(getRequest());
+                    if (setWeb2Dao2InputInfo(getRequest()) == null) {
+                        forward("FileDetail.jsp");
+                        return;
+                    }
                     bean.setValue("request_name", "登録する");
                     bean.setMessage("この内容で登録します。よろしいですか？");
                     bean.setValue("input_name", inputName);
@@ -81,13 +85,12 @@ public class FileDetail extends ControllerBase {
                     throw new AtareSysException(e);
                 }
 
-             // ② sub ボタン押下 → サブ画面（ユーザー選択）へ（送信先のみ）
+                // ② sub ボタン押下 → サブ画面（ユーザー選択）へ（送信先のみ）
             } else if ("sub".equals(actionCmd)) {
                 searchUserList();
                 bean.setValue("request_name", "送信先");
                 forward("FileUserList.jsp");
-                return;   // 忘れずに戻す
-
+                return; // 忘れずに戻す
 
                 // ③ return ボタン押下 → 一覧画面へ戻す
             } else if ("return".equals(actionCmd)) {
@@ -220,10 +223,10 @@ public class FileDetail extends ControllerBase {
      */
     private void searchUserList() throws AtareSysException {
         WebBean bean = getWebBean();
-        
+
         String req = bean.value("request_name");
         bean.setValue("request_name", req);
-        
+
         String selectedIds = bean.value("selectedIds");
         if (selectedIds == null) {
             selectedIds = "";
@@ -321,8 +324,8 @@ public class FileDetail extends ControllerBase {
      * 画面の項目をDAOクラスに格納しそれをシリアライズして、input_infoフィールドに格納する。.
      *
      * @return なし
-     * @throws ServletException 
-     * @throws IOException 
+     * @throws ServletException
+     * @throws IOException
      * @throws AtareSysException フレームワーク共通例外
      */
     private UserInfoDao setWeb2Dao2InputInfo(HttpServletRequest request)
@@ -331,7 +334,10 @@ public class FileDetail extends ControllerBase {
         UserInfoDao dao = new UserInfoDao();
         dao.setUserInfoId(bean.value("user_info_id"));
 
-        FileUpload(request, dao.getUserInfoId());
+        if (FileUpload(request, dao.getUserInfoId()) == null) {
+            bean.setError("ファイルを選択してください。");
+            return null;
+        }
 
         bean.setValue("input_info", Sup.serialize(dao));
         bean.setValue("dao", dao);
@@ -340,6 +346,7 @@ public class FileDetail extends ControllerBase {
 
     /**
      * ファイルデータを取得し、アップロードした後にデータベースへ登録
+     * 
      * @param request
      * @param pUserInfoId
      * @return
@@ -352,27 +359,32 @@ public class FileDetail extends ControllerBase {
         WebBean bean = getWebBean();
         ArrayList<FileDao> fileDaos = new ArrayList<>();
 
-        // 送信元ユーザーIDを取得
-        String sourceUserInfoIdsString = bean.value("user_info_id"); // 送信元ユーザーIDを取得
-        String[] sourceUserInfoIds = sourceUserInfoIdsString.split(",");
+        // 送信元ユーザーIDはセッション（ログイン情報）から取得する
+        UserLoginInfo login = (UserLoginInfo) getLoginInfo();
+        String senderUserId = login.getUserInfoId();
 
         // 送信先ユーザーIDを取得
         String destinationUserInfoIdsString = bean.value("destination_user_info_id"); // 送信先ユーザーID
-        String[] destinationUserInfoIds = destinationUserInfoIdsString.split(",");
-
-        // 送信元ユーザーのIDを取得
-        String senderUserId = sourceUserInfoIds.length > 0 ? sourceUserInfoIds[0] : null; // 最初のユーザーを送信元として選択
-
-        String filePath = "C:/git/training/kenshuProject/WebContent/upload"; //保存先フォルダのパス設定
-        String skey = GetNumber.getRandomNo(16); //file_key生成
+        String[] destinationUserInfoIds = null;
+        if (destinationUserInfoIdsString != null && !destinationUserInfoIdsString.trim().isEmpty()) {
+            destinationUserInfoIds = destinationUserInfoIdsString.split(",");
+        } else {
+            // 未選択の場合は自分宛といった仕様が考えられるが、ここではとりあえず空配列
+            destinationUserInfoIds = new String[0];
+        }
+        String filePath = request.getServletContext().getRealPath("/upload"); // 保存先フォルダのパス設定
+        String skey = GetNumber.getRandomNo(16); // file_key生成
 
         // ファイルデータを取得
         FileUtil fileUtil = new FileUtil();
         byte[] fileData = (byte[]) bean.object("file");
-        String mimeType = getMimeTypeFromBytes(fileData); //ファイルデータからmimetypeを取得
-        String fileExtension = getExtensionFromMimeType(mimeType); //拡張子取得
+        if (fileData == null) {
+            return null;
+        }
+        String mimeType = getMimeTypeFromBytes(fileData); // ファイルデータからmimetypeを取得
+        String fileExtension = getExtensionFromMimeType(mimeType); // 拡張子取得
         String fileName = bean.value("input_name") + fileExtension; // ファイル名を取得
-        String systemFileName = System.currentTimeMillis() + "_" + UUID.randomUUID().toString().substring(0, 8); //system_file_id生成
+        String systemFileName = System.currentTimeMillis() + "_" + UUID.randomUUID().toString().substring(0, 8); // system_file_id生成
 
         // 拡張子を一度だけ追加
         if (fileExtension != null && !fileExtension.isEmpty()) {
@@ -381,6 +393,13 @@ public class FileDetail extends ControllerBase {
 
         // 完全なファイルパスの生成
         String fullPath = filePath + "/" + systemFileName;
+
+        // 保存先ディレクトリが存在しない場合は作成する
+        java.io.File dir = new java.io.File(filePath);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
         if (!fileUtil.outputFile(fullPath, fileData)) {
             return null;
         }
@@ -402,12 +421,17 @@ public class FileDetail extends ControllerBase {
             fileDao.dbFileInsert(fileId, userInfoId, fullPath, fileName, mimeType, systemFileName, senderUserId, skey,
                     expirationDateString);
             fileDaos.add(fileDao);
+
+            // user_filesテーブルにも紐付けを登録する
+            jp.swell.dao.UserFileDao userFileDao = new jp.swell.dao.UserFileDao();
+            userFileDao.dbUserFileInsert(userInfoId, fileId);
         }
         return fileDaos;
     }
 
     /**
      * MIMEタイプを取得するメソッド
+     * 
      * @param fileData
      * @return
      */
@@ -430,28 +454,30 @@ public class FileDetail extends ControllerBase {
 
     /**
      * MIMEタイプから拡張子を取得するメソッド
+     * 
      * @param mimeType
      * @return
      */
     private String getExtensionFromMimeType(String mimeType) {
         switch (mimeType) {
-        case "application/msword":
-            return ".doc"; // Word 97-2003
-        case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-            return ".docx"; // Word 2007+
-        case "application/vnd.ms-excel":
-            return ".xls"; // Excel 97-2003
-        case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-            return ".xlsx"; // Excel 2007+
-        case "application/pdf":
-            return ".pdf"; // PDFファイル
-        default:
-            return ""; // デフォルトは空文字
+            case "application/msword":
+                return ".doc"; // Word 97-2003
+            case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                return ".docx"; // Word 2007+
+            case "application/vnd.ms-excel":
+                return ".xls"; // Excel 97-2003
+            case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                return ".xlsx"; // Excel 2007+
+            case "application/pdf":
+                return ".pdf"; // PDFファイル
+            default:
+                return ""; // デフォルトは空文字
         }
     }
 
     /**
      * データベースから指定されたレコードを削除するメソッド
+     * 
      * @throws AtareSysException
      */
     public void dbDeletef() throws AtareSysException {

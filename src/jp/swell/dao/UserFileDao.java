@@ -125,7 +125,7 @@ public class UserFileDao implements Serializable {
                 + " user_files.user_files_id as user_files___user_files_id"
                 + ",user_files.user_info_id as user_files___user_info_id"
                 + ",user_files.file_id as user_files___file_id"
-                + " from user_reserve ";
+                + " from user_files ";
         sql += ""
                 + " where user_files_id = " + DbS.chara(pUserFilesId);
         List<HashMap<String, String>> rs = DbBase.dbSelect(sql);
@@ -181,7 +181,7 @@ public class UserFileDao implements Serializable {
     public void setUserFileDaoForJoin(HashMap<String, String> map, UserFileDao dao) throws AtareSysException {
         dao.setUserFilesId(map.getOrDefault("user_files___user_files_id", ""));
         dao.setUserInfoId(map.getOrDefault("user_files___user_info_id", ""));
-        dao.setFileId(map.getOrDefault("user_files___reserve_id", ""));
+        dao.setFileId(map.getOrDefault("user_files___file_id", ""));
     }
 
     /**
@@ -218,7 +218,7 @@ public class UserFileDao implements Serializable {
                 + " user_files_id = " + DbO.chara(getUserFilesId())
                 + "," + " user_info_id = " + DbO.chara(getUserInfoId())
                 + "," + " file_id = " + DbO.chara(getFileId())
-                + " where user_files = " + DbS.chara(userFilesId)
+                + " where user_files_id = " + DbS.chara(userFilesId)
                 + "";
         int ret = DbBase.dbExec(sql);
         if (ret != 1)
