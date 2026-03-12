@@ -45,20 +45,12 @@ public class UserLogin extends ControllerBase {
             // ログインボタンが押されたときの処理
             if ("login".equals(bean.value("action_cmd"))) {
                 this.setLoginInfo(null);
-                UserLoginInfo userLoginInfo = (UserLoginInfo) getLoginInfo();
-                if (userLoginInfo == null) {
-                    userLoginInfo = new UserLoginInfo();
-                }
-                if (!userLoginInfo.login(bean.value("ac"), bean.value("ko"))) {
-                    bean.setError("ac", "usernameかpasswordが違います");
+                if (!inputCheck()) {
                     this.forward("/UserLogin.jsp");
                     return; // 入力チェックが失敗した場合は、これ以降の処理を行わない
                 }
 
-                userLoginInfo.setUserInfo(userLoginInfo.getUserInfoDao());
-                setLoginInfo(userLoginInfo);
-                bean.setValue("user_info_id", userLoginInfo.getUserInfoId());
-
+                UserLoginInfo userLoginInfo = (UserLoginInfo) getLoginInfo();
                 if (userLoginInfo.isSystemManager()) {
                     redirect("MenuAdmin.do");
                 } else {
@@ -67,6 +59,7 @@ public class UserLogin extends ControllerBase {
                 return;
             } else if ("repassword".equals(bean.value("action_cmd"))) {
                 redirect("SendPassMail.do");
+                return;
             }
         } else if ("UserMenuHome".equals(bean.value("form_name"))) {
             // ログインボタンが押されたときの処理
@@ -89,11 +82,11 @@ public class UserLogin extends ControllerBase {
 
         WebBean bean = getWebBean();
         if (bean.value("ac").length() == 0) {
-            bean.setError("ac", "未入力");
+            bean.getItemErrors().put("ac", "usernameかpasswordが未入力です。");
             return false;
         }
         if (bean.value("ko").length() == 0) {
-            bean.setError("ko", "未入力");
+            bean.getItemErrors().put("ko", "usernameかpasswordが未入力です。");
             return false;
         }
 
@@ -102,7 +95,7 @@ public class UserLogin extends ControllerBase {
             userLoginInfo = new UserLoginInfo();
         }
         if (!userLoginInfo.login(bean.value("ac"), bean.value("ko"))) {
-            bean.setError("ac", "usernameかpasswordが違います");
+            bean.getItemErrors().put("ac", "usernameかpasswordが違います");
             return false;
         }
         userLoginInfo.setUserInfo(userLoginInfo.getUserInfoDao());

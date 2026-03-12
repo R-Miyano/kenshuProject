@@ -15,8 +15,8 @@
 	<script type="text/javascript" src="js/menu.js"></script>
 	<script>
 		$(function ($) {
-			$('html').smoothscroll({easing: 'swing', speed: 1000, margintop: 10});
-			$('.totop').scrollshow({position: 500});
+			$('html').smoothscroll({ easing: 'swing', speed: 1000, margintop: 10 });
+			$('.totop').scrollshow({ position: 500 });
 			$('.slide').slideshow({
 				touch: true,
 				touchDistance: '80',
@@ -119,6 +119,13 @@
 			bottom: 0%;
 		}
 	</style>
+	<script type="text/javascript">
+		function go_submit_1(action_cmd) {
+			document.getElementById('main_form').action = 'UserLogin.do';
+			document.getElementById('action_cmd').value = action_cmd;
+			document.getElementById('main_form').submit();
+		}
+	</script>
 	<!--[if lt IE 9]>
     <script src="js/html5shiv.js"></script>
     <script src="js/css3-mediaqueries.js"></script>
@@ -134,7 +141,7 @@
 			</div>
 			<form id="main_form" method="post" action="UserLogin.do" class="main__form">
 				<input type="hidden" name="form_name" value="UserLogin" />
-				<input type="hidden" name="action_cmd" value="login" />
+				<input type="hidden" name="action_cmd" id="action_cmd" value="login" />
 
 				<div class="main__form--name">
 					<input type="text" id="ac" name="ac" class="ime_disabled" value="" placeholder="Username" size="25"
@@ -148,7 +155,8 @@
 					<input type="submit" id="bt" name="login-btn" class="submit-btn" value="ログイン" />
 				</div>
 				<div class="main__form--link">
-					<a href="#" id="reissue" onclick="go_retry()">パスワードを忘れた方はこちら</a>
+					<a href="#" id="reissue" onclick="go_submit_1('repassword'); return false;"
+						class="link-btn">パスワードを忘れた方はこちら</a>
 				</div>
 			</form>
 			<div class="copyright">Copyright &#169; 2017 RayD Developer All Rights Reserved.</div><!-- /.copyright -->

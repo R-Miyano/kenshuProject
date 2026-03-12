@@ -91,6 +91,12 @@ public class SendPassMail extends ControllerBase
             }
         forward("ViewUserList.do");
         }
+        else
+        {
+            // リダイレクトによる初回アクセス時（form_nameが未設定の場合）
+            bean.setMessage("登録したメールアドレスを入力してください");
+            forward("SendPassMail.jsp");
+        }
     }
     
     /**
